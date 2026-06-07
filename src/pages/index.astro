@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro'
 ---
 
-<BaseLayout title="Home" description="市川龍太郎のポートフォリオサイト。制作、研究、技術、連絡先を旧サイトの雰囲気を保って掲載しています。">
+<BaseLayout title="Ryutaro Ichikawa Portfolio" description="市川龍太郎のポートフォリオサイト。制作実績、折り紙力学系の研究、技術スタック、連絡先を掲載しています。">
   <main
     id="content"
     class="tessellation-page relative min-h-screen scroll-mt-[13vh]"
@@ -12,12 +12,12 @@ import BaseLayout from '../layouts/BaseLayout.astro'
         class="content-panel relative mb-auto w-full max-w-[900px] rounded-[8px] px-6 pb-8 pt-24 text-zinc-900 md:px-12"
         aria-labelledby="home-title"
       >
-        <h1
-          id="home-title"
+        <h1 id="home-title" class="sr-only">Ryutaro Ichikawa Portfolio</h1>
+        <p
           class="absolute left-[-10px] top-4 w-[calc(100%+20px)] border-y border-red-300/45 bg-red-600/70 px-4 py-3 text-center text-sm font-black tracking-normal text-white shadow-[0_10px_28px_rgb(24_24_27/0.08)] md:text-base"
         >
           WELCOME TO MY PORTFOLIO SITE!
-        </h1>
+        </p>
         <div class="space-y-5 text-base leading-8 md:p-8 md:text-lg md:leading-9">
           <p>
             はじめまして、市川 龍太郎 と申します。<br>
