@@ -5,10 +5,13 @@
   "scripts": {
     "build": "XDG_CONFIG_HOME=/tmp ASTRO_TELEMETRY_DISABLED=1 astro build",
     "dev": "XDG_CONFIG_HOME=/tmp ASTRO_TELEMETRY_DISABLED=1 astro dev",
-    "preview": "XDG_CONFIG_HOME=/tmp ASTRO_TELEMETRY_DISABLED=1 astro preview",
-    "typecheck": "XDG_CONFIG_HOME=/tmp ASTRO_TELEMETRY_DISABLED=1 astro check"
+    "preview": "npm run build && wrangler dev",
+    "typecheck": "XDG_CONFIG_HOME=/tmp ASTRO_TELEMETRY_DISABLED=1 astro check",
+    "generate-types": "wrangler types",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^13.6.1",
     "@supabase/supabase-js": "^2.107.0",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.4.4",
@@ -19,9 +22,13 @@
     "@astrojs/check": "^0.9.9",
     "@types/three": "^0.184.1",
     "typescript": "^5.8.0",
-    "vite": "^7.3.5"
+    "vite": "^7.3.5",
+    "wrangler": "^4.98.0"
   },
   "engines": {
     "node": ">=22.12.0"
+  },
+  "overrides": {
+    "vite": "^7"
   }
 }
