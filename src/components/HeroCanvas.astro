@@ -1,0 +1,398 @@
+<canvas data-hero-canvas class="absolute left-0 top-0 z-0 h-full w-full cursor-grab select-none active:cursor-grabbing md:h-[142%] md:w-[128%]" aria-hidden="true"></canvas>
+
+<script>
+  import {
+    AmbientLight,
+    Box3,
+    Color,
+    DirectionalLight,
+    DoubleSide,
+    GridHelper,
+    Group,
+    IcosahedronGeometry,
+    Mesh,
+    MeshBasicMaterial,
+    MeshStandardMaterial,
+    PerspectiveCamera,
+    Scene,
+    ShaderMaterial,
+    SphereGeometry,
+    TorusKnotGeometry,
+    Vector2,
+    Vector3,
+    WebGLRenderer
+  } from 'three'
+  import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+  import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
+  import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-hero-canvas]')
+
+  const stateConfigs = [
+    {
+      key: 'home',
+      label: ['現在サイトを大規模改修中です。', '少しづつ変えていっています。'],
+      geometry: () => new TorusKnotGeometry(1.6, 0.26, 120, 12),
+      color: '#00ffff',
+      emissive: '#00333a',
+      camera: { azimuth: 1.24, elevation: 0.14, distance: 15.5 }
+    },
+    {
+      key: 'about',
+      label: ['About', 'Profile / Skills / Hobbies'],
+      geometry: () => new SphereGeometry(2.35, 42, 42),
+      color: '#3ec679',
+      emissive: '#0b2d18',
+      camera: { azimuth: 1.24, elevation: 0.14, distance: 15.5 }
+    },
+    {
+      key: 'works',
+      label: ['Works', 'Projects / Games / Robots'],
+      geometry: () => new SphereGeometry(2.35, 42, 42),
+      color: '#00ffff',
+      emissive: '#003b3b',
+      camera: { azimuth: 1.24, elevation: 0.14, distance: 15.5 }
+    },
+    {
+      key: 'reserch',
+      label: ['Reserch', 'Origami / Dynamical Systems'],
+      geometry: () => new IcosahedronGeometry(2.55, 2),
+      color: '#7dd3fc',
+      emissive: '#12304a',
+      camera: { azimuth: 1.24, elevation: 0.14, distance: 15.5 }
+    },
+    {
+      key: 'diary',
+      label: ['Diary', 'Notes / Logs / Thoughts'],
+      geometry: () => new TorusKnotGeometry(1.5, 0.18, 100, 10),
+      color: '#f0d35f',
+      emissive: '#352600',
+      camera: { azimuth: 1.24, elevation: 0.14, distance: 15.5 }
+    },
+    {
+      key: 'contact',
+      label: ['Contact', 'Mail / Message'],
+      geometry: () => new SphereGeometry(2.35, 36, 36),
+      color: '#ff3030',
+      emissive: '#3a0000',
+      camera: { azimuth: 1.24, elevation: 0.14, distance: 15.5 }
+    }
+  ]
+
+  if (canvas) {
+    const scene = new Scene()
+    scene.background = new Color('#000000')
+
+    const camera = new PerspectiveCamera(45, 1, 0.1, 100)
+    const renderer = new WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' })
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6))
+
+    const heroGroup = new Group()
+    heroGroup.position.y = 0.85
+    scene.add(heroGroup)
+
+    const grid = new GridHelper(22, 22, '#14545d', '#10272d')
+    grid.position.x = 0.8
+    grid.position.y = -0.9
+    scene.add(grid)
+
+    const shaderUniforms = {
+      uTime: { value: 0 },
+      uAmplitude: { value: new Vector2(0.12, 0.12) },
+      uFrequency: { value: new Vector2(20, 5) }
+    }
+    const vertexShader = `
+      uniform vec2 uAmplitude;
+      uniform vec2 uFrequency;
+      uniform float uTime;
+      varying vec2 vUv;
+      void main() {
+        vec4 modelPosition = modelMatrix * vec4(position, 1.0);
+        modelPosition.y += sin(modelPosition.x * uFrequency.x - uTime) * uAmplitude.x;
+        modelPosition.x += cos(modelPosition.y * uFrequency.y - uTime) * uAmplitude.y;
+        vec4 viewPosition = viewMatrix * modelPosition;
+        gl_Position = projectionMatrix * viewPosition;
+        vUv = uv;
+      }
+    `
+    const fragmentShader = `
+      precision mediump float;
+      varying vec2 vUv;
+      uniform vec3 uColor;
+      void main() {
+        gl_FragColor = vec4(mix(uColor, vec3(1.0, vUv.y, 0.55), 0.35), 1.0);
+      }
+    `
+
+    const mainMaterial = new ShaderMaterial({
+      uniforms: {
+        ...shaderUniforms,
+        uColor: { value: new Color('#00ffff') }
+      },
+      vertexShader,
+      fragmentShader,
+      wireframe: true
+    })
+
+    const origamiMaterial = new MeshStandardMaterial({
+      color: new Color('#7dd3fc'),
+      emissive: new Color('#12304a'),
+      roughness: 0.62,
+      metalness: 0.04,
+      side: DoubleSide
+    })
+
+    const mainMesh = new Mesh(stateConfigs[0].geometry(), mainMaterial)
+    mainMesh.position.set(2.05, 0.9, -0.45)
+    heroGroup.add(mainMesh)
+
+    const textGroup = new Group()
+    textGroup.position.set(2.0, 4.55, 0.2)
+    textGroup.rotation.set(-0.06, -0.16, 0)
+    heroGroup.add(textGroup)
+
+    let font: ReturnType<FontLoader['parse']> | null = null
+    let textMeshes: Mesh[] = []
+    let stateIndex = Math.max(0, stateConfigs.findIndex((item) => `/${item.key}` === window.location.pathname))
+    if (window.location.pathname === '/') stateIndex = 0
+    let orbit = { ...stateConfigs[stateIndex].camera }
+    let targetOrbit = { ...orbit }
+    let targetScale = 1
+    let pulseScale = 1
+    let dragMode: 'none' | 'orbit' | 'pan' = 'none'
+    let lastX = 0
+    let lastY = 0
+    let pointerMoved = false
+    let frameId = 0
+    const unbindHeroStates: Array<() => void> = []
+    const lookAtTarget = new Vector3(2.05, 1.25, 0)
+    const targetLookAt = lookAtTarget.clone()
+    const cameraRight = new Vector3()
+    const cameraUp = new Vector3()
+
+    scene.add(new AmbientLight('#ffffff', 0.42))
+    const light = new DirectionalLight('#ffffff', 1.4)
+    light.position.set(4, 6, 5)
+    scene.add(light)
+
+    const clearText = () => {
+      textMeshes.forEach((mesh) => {
+        textGroup.remove(mesh)
+        mesh.geometry.dispose()
+      })
+      textMeshes = []
+    }
+
+    const addTextLine = (text: string, size: number, y: number) => {
+      if (!font) return
+      const geometry = new TextGeometry(text, {
+        font,
+        size,
+        depth: 0.08,
+        curveSegments: 4,
+        bevelEnabled: false
+      })
+      geometry.center()
+      const material = new MeshBasicMaterial({ color: new Color(stateConfigs[stateIndex].color) })
+      const mesh = new Mesh(geometry, material)
+      mesh.position.set(0, y, 0)
+      textGroup.add(mesh)
+      textMeshes.push(mesh)
+    }
+
+    const renderText = () => {
+      clearText()
+      const config = stateConfigs[stateIndex]
+      addTextLine(config.label[0], stateIndex === 0 ? 0.45 : 0.72, 0.65)
+      addTextLine(config.label[1], 0.32, 0.05)
+    }
+
+    const applyState = (nextIndex: number) => {
+      const next = stateConfigs[nextIndex]
+      if (!next) return
+      stateIndex = nextIndex
+      mainMesh.geometry.dispose()
+      mainMesh.geometry = next.geometry()
+      mainMaterial.uniforms.uColor.value = new Color(next.color)
+      mainMaterial.wireframe = nextIndex !== 4
+      targetOrbit = { ...next.camera }
+      targetScale = 1.12
+      renderText()
+    }
+
+    const loadFont = async () => {
+      const response = await fetch('/fonts/DotGothic16_Regular.json')
+      const fontJson = await response.json()
+      font = new FontLoader().parse(fontJson)
+      renderText()
+    }
+
+    const loadOrigamiModel = async () => {
+      try {
+        const gltf = await new GLTFLoader().loadAsync('/models/origami_model1.gltf')
+        const model = gltf.scene
+        const box = new Box3().setFromObject(model)
+        const size = box.getSize(new Vector3())
+        model.scale.setScalar(Number.isFinite(size.x) && size.x > 0 ? 6.5 / size.x : 1)
+        model.position.set(2.05, 0.8, -0.45)
+        model.traverse((child) => {
+          if (child instanceof Mesh) {
+            child.material = origamiMaterial
+          }
+        })
+        model.visible = false
+        heroGroup.add(model)
+        return model
+      } catch {
+        return null
+      }
+    }
+
+    let origamiModel: Group | null = null
+    loadOrigamiModel().then((model) => {
+      origamiModel = model
+    })
+    loadFont()
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect()
+      camera.aspect = rect.width / Math.max(rect.height, 1)
+      camera.updateProjectionMatrix()
+      renderer.setSize(rect.width, rect.height, false)
+    }
+
+    const updateCamera = () => {
+      orbit.azimuth += (targetOrbit.azimuth - orbit.azimuth) * 0.08
+      orbit.elevation += (targetOrbit.elevation - orbit.elevation) * 0.08
+      orbit.distance += (targetOrbit.distance - orbit.distance) * 0.08
+      lookAtTarget.lerp(targetLookAt, 0.1)
+      const elevation = Math.max(-0.15, Math.min(1.25, orbit.elevation))
+      camera.position.set(
+        lookAtTarget.x + Math.cos(orbit.azimuth) * Math.cos(elevation) * orbit.distance,
+        lookAtTarget.y + Math.sin(elevation) * orbit.distance,
+        lookAtTarget.z + Math.sin(orbit.azimuth) * Math.cos(elevation) * orbit.distance
+      )
+      camera.lookAt(lookAtTarget)
+    }
+
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.button !== 0 && event.button !== 2) return
+      event.preventDefault()
+      dragMode = event.button === 2 ? 'pan' : 'orbit'
+      lastX = event.clientX
+      lastY = event.clientY
+      pointerMoved = false
+      canvas.setPointerCapture(event.pointerId)
+    }
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (dragMode === 'none') return
+      const dx = event.clientX - lastX
+      const dy = event.clientY - lastY
+      lastX = event.clientX
+      lastY = event.clientY
+      pointerMoved = pointerMoved || Math.abs(dx) + Math.abs(dy) > 2
+      if (dragMode === 'pan') {
+        camera.getWorldDirection(cameraUp)
+        cameraRight.crossVectors(cameraUp, camera.up).normalize()
+        cameraUp.crossVectors(cameraRight, cameraUp).normalize()
+        const panSpeed = targetOrbit.distance * 0.0019
+        targetLookAt.addScaledVector(cameraRight, -dx * panSpeed)
+        targetLookAt.addScaledVector(cameraUp, dy * panSpeed)
+        return
+      }
+      targetOrbit.azimuth += dx * 0.006
+      targetOrbit.elevation += dy * 0.004
+      targetOrbit.elevation = Math.max(-0.15, Math.min(1.25, targetOrbit.elevation))
+    }
+
+    const onPointerUp = (event: PointerEvent) => {
+      dragMode = 'none'
+      if (canvas.hasPointerCapture(event.pointerId)) {
+        canvas.releasePointerCapture(event.pointerId)
+      }
+    }
+
+    const onWheel = (event: WheelEvent) => {
+      event.preventDefault()
+      targetOrbit.distance = Math.max(0.05, Math.min(30, targetOrbit.distance + event.deltaY * 0.012))
+    }
+
+    const onClick = () => {
+      if (pointerMoved) return
+      mainMaterial.wireframe = !mainMaterial.wireframe
+      pulseScale = 1.28
+    }
+
+    const onContextMenu = (event: MouseEvent) => {
+      event.preventDefault()
+    }
+
+    canvas.addEventListener('pointerdown', onPointerDown)
+    canvas.addEventListener('pointermove', onPointerMove)
+    canvas.addEventListener('pointerup', onPointerUp)
+    canvas.addEventListener('pointercancel', onPointerUp)
+    canvas.addEventListener('wheel', onWheel, { passive: false })
+    canvas.addEventListener('click', onClick)
+    canvas.addEventListener('contextmenu', onContextMenu)
+    window.addEventListener('resize', resize)
+    resize()
+    applyState(stateIndex)
+
+    document.querySelectorAll<HTMLElement>('[data-hero-state]').forEach((item) => {
+      const handleHeroState = () => applyState(Number(item.dataset.heroState || 0))
+      item.addEventListener('mouseenter', handleHeroState)
+      unbindHeroStates.push(() => item.removeEventListener('mouseenter', handleHeroState))
+    })
+
+    const handleExternalHeroState = (event: Event) => {
+      const nextState = Number((event as CustomEvent<number>).detail)
+      if (Number.isFinite(nextState)) {
+        applyState(nextState)
+      }
+    }
+    window.addEventListener('portfolio:hero-state', handleExternalHeroState)
+
+    const cleanup = () => {
+      cancelAnimationFrame(frameId)
+      canvas.removeEventListener('pointerdown', onPointerDown)
+      canvas.removeEventListener('pointermove', onPointerMove)
+      canvas.removeEventListener('pointerup', onPointerUp)
+      canvas.removeEventListener('pointercancel', onPointerUp)
+      canvas.removeEventListener('wheel', onWheel)
+      canvas.removeEventListener('click', onClick)
+      canvas.removeEventListener('contextmenu', onContextMenu)
+      window.removeEventListener('resize', resize)
+      window.removeEventListener('portfolio:hero-state', handleExternalHeroState)
+      unbindHeroStates.forEach((unbind) => unbind())
+      clearText()
+      mainMesh.geometry.dispose()
+      origamiMaterial.dispose()
+      renderer.dispose()
+      document.removeEventListener('astro:before-swap', cleanup)
+    }
+    document.addEventListener('astro:before-swap', cleanup, { once: true })
+
+    const tick = () => {
+      const time = performance.now() * 0.001
+      shaderUniforms.uTime.value = time
+      targetScale += (1 - targetScale) * 0.08
+      pulseScale += (1 - pulseScale) * 0.08
+      mainMesh.scale.setScalar(targetScale * pulseScale)
+      mainMesh.rotation.x = time * 0.36
+      mainMesh.rotation.y = time * 0.52
+      if (origamiModel) {
+        origamiModel.visible = stateIndex === 3
+        mainMesh.visible = stateIndex !== 3
+        origamiModel.rotation.y = time * 0.28
+      } else {
+        mainMesh.visible = true
+      }
+      updateCamera()
+      renderer.render(scene, camera)
+      frameId = requestAnimationFrame(tick)
+    }
+
+    tick()
+  }
+</script>

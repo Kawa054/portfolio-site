@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { researchTopics } from '../data/portfolio'
+---
+
+<BaseLayout title="Reserch" description="折り紙と力学系、KAM定理に関する研究内容。">
+  <main
+    id="content"
+    class="tessellation-page relative min-h-screen scroll-mt-[13vh]"
+    data-tab-root
+  >
+    <section class="page-surface min-h-screen px-5 py-14 md:px-8 md:pt-16">
+      <div class="mx-auto flex w-full max-w-[1320px] flex-col justify-center gap-8 md:flex-row">
+      <nav class="side-nav section-side-nav section-nav-panel shrink-0 rounded-[10px] md:min-h-[calc(100vh-5rem)] md:w-[230px]" aria-label="Reserch page navigation">
+        {researchTopics.map((topic, index) => (
+          <button
+            type="button"
+            class:list={[
+              'side-nav-item group w-full text-left text-lg text-slate-700 transition md:text-xl',
+              index === 0 ? 'is-active' : ''
+            ]}
+            data-tab-button={index}
+          >
+            <span class="side-nav-index" data-tab-dot>{String(index + 1).padStart(2, '0')}</span>
+            <span class="side-nav-label">{topic.title}</span>
+          </button>
+        ))}
+      </nav>
+
+      <article class="content-panel min-h-[calc(100vh-5rem)] w-full max-w-[1040px] rounded-[10px] p-6 text-zinc-900 md:p-10">
+        {researchTopics.map((topic, index) => (
+          <section class:list={[index !== 0 ? 'hidden' : '', '']} data-tab-panel={index} aria-labelledby={`research-${index}`}>
+            <header class="content-heading mb-6 pb-5">
+              <h1 id={`research-${index}`} class="text-3xl font-bold md:text-4xl">{topic.heading}</h1>
+            </header>
+            <div class="feature-card mb-8 rounded-md p-3">
+              <img src={topic.image} alt={topic.heading} data-lightbox-image class="max-h-[340px] w-full cursor-zoom-in rounded-md object-contain bg-white">
+            </div>
+            <div class="space-y-8">
+              {topic.sections.map((section) => (
+                <section class="feature-card rounded-md p-5 md:p-6">
+                  {section.title && <h2 class="mb-5 text-2xl font-bold">{section.title}</h2>}
+                  {section.paragraphs && (
+                    <div class="space-y-5 text-base leading-8 md:text-lg">
+                      {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+                    </div>
+                  )}
+                  {section.links && (
+                    <div class="mt-5 flex flex-wrap gap-3">
+                      {section.links.map((link) => (
+                        <a
+                          class="rounded bg-zinc-900 px-4 py-2 text-sm font-bold text-white transition hover:bg-[#ee7800]"
+                          href={link.url}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                  {section.images && (
+                    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {section.images.map((image) => (
+                        <img src={image} alt="" data-lightbox-image class="h-full max-h-[340px] w-full cursor-zoom-in rounded-md bg-white object-contain p-2 shadow-[0_6px_18px_rgb(24_24_27/0.05)] transition hover:brightness-95">
+                      ))}
+                    </div>
+                  )}
+                  {section.videos && (
+                    <div class="mt-6 grid gap-4 lg:grid-cols-2">
+                      {section.videos.map((videoId) => (
+                        <iframe
+                          class="aspect-video w-full rounded-md bg-black"
+                          src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                          title="YouTube video player"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowfullscreen
+                        />
+                      ))}
+                    </div>
+                  )}
+                </section>
+              ))}
+            </div>
+          </section>
+        ))}
+      </article>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

@@ -1,0 +1,173 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro'
+---
+
+<AdminLayout title="Access Log">
+  <main class="min-h-screen px-5 py-8">
+    <section class="mx-auto max-w-6xl">
+      <header class="mb-8 flex flex-col gap-4 border-b border-white/15 pb-6 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p class="text-sm font-semibold uppercase tracking-wider text-cyan-300">Portfolio Admin</p>
+          <h1 class="mt-2 text-3xl font-bold md:text-4xl">アクセスログ</h1>
+        </div>
+        <div class="flex gap-3">
+          <a href="/" class="rounded border border-white/15 px-4 py-2 text-sm text-white transition hover:border-cyan-300">Public site</a>
+          <button id="sign-out" type="button" class="rounded bg-white px-4 py-2 text-sm font-bold text-black transition hover:bg-cyan-300">
+            Sign out
+          </button>
+        </div>
+      </header>
+
+      <p id="status" class="mb-6 text-sm text-neutral-300">Loading...</p>
+
+      <div class="grid gap-4 md:grid-cols-4">
+        <section class="rounded border border-white/15 bg-white/8 p-5">
+          <p class="text-sm text-neutral-300">Total PV</p>
+          <p id="total-pv" class="mt-3 text-3xl font-bold">-</p>
+        </section>
+        <section class="rounded border border-white/15 bg-white/8 p-5">
+          <p class="text-sm text-neutral-300">Today PV</p>
+          <p id="today-pv" class="mt-3 text-3xl font-bold">-</p>
+        </section>
+        <section class="rounded border border-white/15 bg-white/8 p-5">
+          <p class="text-sm text-neutral-300">Visitors</p>
+          <p id="visitors" class="mt-3 text-3xl font-bold">-</p>
+        </section>
+        <section class="rounded border border-white/15 bg-white/8 p-5">
+          <p class="text-sm text-neutral-300">Rows Loaded</p>
+          <p id="rows" class="mt-3 text-3xl font-bold">-</p>
+        </section>
+      </div>
+
+      <div class="mt-8 grid gap-6 lg:grid-cols-2">
+        <section class="rounded border border-white/15 bg-white/8 p-5">
+          <h2 class="mb-4 text-xl font-bold">Pages</h2>
+          <div id="pages-list" class="space-y-3 text-sm"></div>
+        </section>
+        <section class="rounded border border-white/15 bg-white/8 p-5">
+          <h2 class="mb-4 text-xl font-bold">Referrers</h2>
+          <div id="referrers-list" class="space-y-3 text-sm"></div>
+        </section>
+      </div>
+
+      <section class="mt-8 overflow-hidden rounded border border-white/15 bg-white/8">
+        <div class="border-b border-white/15 p-5">
+          <h2 class="text-xl font-bold">Recent Visits</h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[760px] text-left text-sm">
+            <thead class="bg-white/10 text-neutral-300">
+              <tr>
+                <th class="px-4 py-3">Time</th>
+                <th class="px-4 py-3">Path</th>
+                <th class="px-4 py-3">Referrer</th>
+                <th class="px-4 py-3">Language</th>
+                <th class="px-4 py-3">Screen</th>
+              </tr>
+            </thead>
+            <tbody id="recent-table" class="divide-y divide-white/10"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    import { createClient } from '@supabase/supabase-js'
+
+    type Summary = {
+      total: number
+      today: number
+      visitors: number
+      rowsLoaded: number
+      pages: Array<{ key: string; count: number }>
+      referrers: Array<{ key: string; count: number }>
+      recent: Array<{
+        created_at: string
+        path: string
+        referrer: string | null
+        language: string | null
+        screen: string | null
+      }>
+    }
+
+    const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+    const status = document.querySelector<HTMLElement>('#status')
+
+    const setStatus = (text: string) => {
+      if (status) status.textContent = text
+    }
+
+    const text = (selector: string, value: string | number) => {
+      const element = document.querySelector<HTMLElement>(selector)
+      if (element) element.textContent = String(value)
+    }
+
+    const renderList = (selector: string, rows: Array<{ key: string; count: number }>) => {
+      const element = document.querySelector<HTMLElement>(selector)
+      if (!element) return
+      element.innerHTML = ''
+      rows.forEach((row) => {
+        const item = document.createElement('div')
+        item.className = 'flex items-center justify-between gap-4 border-b border-white/10 pb-2'
+        item.innerHTML = `<span class="truncate">${row.key}</span><strong>${row.count}</strong>`
+        element.append(item)
+      })
+    }
+
+    const renderRecent = (rows: Summary['recent']) => {
+      const table = document.querySelector<HTMLElement>('#recent-table')
+      if (!table) return
+      table.innerHTML = ''
+      rows.forEach((row) => {
+        const tr = document.createElement('tr')
+        const time = new Date(row.created_at).toLocaleString()
+        tr.innerHTML = `
+          <td class="px-4 py-3 text-neutral-300">${time}</td>
+          <td class="px-4 py-3">${row.path}</td>
+          <td class="px-4 py-3 text-neutral-300">${row.referrer || '-'}</td>
+          <td class="px-4 py-3">${row.language || '-'}</td>
+          <td class="px-4 py-3">${row.screen || '-'}</td>
+        `
+        table.append(tr)
+      })
+    }
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      setStatus('Supabase の公開環境変数が未設定です。')
+    } else {
+      const supabase = createClient(supabaseUrl, supabaseAnonKey)
+      const { data } = await supabase.auth.getSession()
+
+      if (!data.session) {
+        window.location.href = '/admin/login'
+      } else {
+        const response = await fetch('/api/admin/summary', {
+          headers: {
+            authorization: `Bearer ${data.session.access_token}`
+          }
+        })
+
+        if (!response.ok) {
+          setStatus(response.status === 403 ? 'このアカウントは管理者として許可されていません。' : 'ログ取得に失敗しました。')
+        } else {
+          const summary = await response.json() as Summary
+          text('#total-pv', summary.total)
+          text('#today-pv', summary.today)
+          text('#visitors', summary.visitors)
+          text('#rows', summary.rowsLoaded)
+          renderList('#pages-list', summary.pages)
+          renderList('#referrers-list', summary.referrers)
+          renderRecent(summary.recent)
+          setStatus('最新1000件をもとに集計しています。')
+        }
+      }
+
+      document.querySelector<HTMLButtonElement>('#sign-out')?.addEventListener('click', async () => {
+        await supabase.auth.signOut()
+        window.location.href = '/admin/login'
+      })
+    }
+  </script>
+</AdminLayout>

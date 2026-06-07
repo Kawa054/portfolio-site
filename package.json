@@ -1,0 +1,27 @@
+{
+  "name": "ryutaro-ichikawa-portfolio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "XDG_CONFIG_HOME=/tmp ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "dev": "XDG_CONFIG_HOME=/tmp ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "preview": "XDG_CONFIG_HOME=/tmp ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "typecheck": "XDG_CONFIG_HOME=/tmp ASTRO_TELEMETRY_DISABLED=1 astro check"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.107.0",
+    "@tailwindcss/vite": "^4.3.0",
+    "astro": "^6.4.4",
+    "tailwindcss": "^4.3.0",
+    "three": "^0.172.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@types/three": "^0.184.1",
+    "typescript": "^5.8.0",
+    "vite": "^7.3.5"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

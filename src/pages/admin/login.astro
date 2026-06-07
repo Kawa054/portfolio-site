@@ -1,0 +1,80 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro'
+---
+
+<AdminLayout title="Login">
+  <main class="grid min-h-screen place-items-center px-5 py-10">
+    <section class="w-full max-w-[420px] rounded border border-white/15 bg-white/8 p-6 shadow-2xl">
+      <header class="mb-8">
+        <p class="text-sm font-semibold uppercase tracking-wider text-cyan-300">Portfolio Admin</p>
+        <h1 class="mt-2 text-3xl font-bold">ログイン</h1>
+      </header>
+
+      <form id="login-form" class="space-y-5">
+        <label class="block">
+          <span class="mb-2 block text-sm text-neutral-300">Email</span>
+          <input
+            id="email"
+            type="email"
+            autocomplete="email"
+            required
+            class="w-full rounded border border-white/15 bg-black/30 px-3 py-3 text-white outline-none transition focus:border-cyan-300"
+          >
+        </label>
+        <label class="block">
+          <span class="mb-2 block text-sm text-neutral-300">Password</span>
+          <input
+            id="password"
+            type="password"
+            autocomplete="current-password"
+            required
+            class="w-full rounded border border-white/15 bg-black/30 px-3 py-3 text-white outline-none transition focus:border-cyan-300"
+          >
+        </label>
+        <button
+          type="submit"
+          class="w-full rounded bg-cyan-300 px-4 py-3 font-bold text-black transition hover:bg-white"
+        >
+          Sign in
+        </button>
+      </form>
+
+      <p id="message" class="mt-5 min-h-6 text-sm text-red-300"></p>
+    </section>
+  </main>
+
+  <script>
+    import { createClient } from '@supabase/supabase-js'
+
+    const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY
+    const form = document.querySelector<HTMLFormElement>('#login-form')
+    const message = document.querySelector<HTMLElement>('#message')
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      if (message) message.textContent = 'Supabase の公開環境変数が未設定です。'
+    } else {
+      const supabase = createClient(supabaseUrl, supabaseAnonKey)
+      const { data } = await supabase.auth.getSession()
+      if (data.session) {
+        window.location.href = '/admin'
+      }
+
+      form?.addEventListener('submit', async (event) => {
+        event.preventDefault()
+        if (message) message.textContent = ''
+
+        const email = document.querySelector<HTMLInputElement>('#email')?.value || ''
+        const password = document.querySelector<HTMLInputElement>('#password')?.value || ''
+        const { error } = await supabase.auth.signInWithPassword({ email, password })
+
+        if (error) {
+          if (message) message.textContent = error.message
+          return
+        }
+
+        window.location.href = '/admin'
+      })
+    }
+  </script>
+</AdminLayout>

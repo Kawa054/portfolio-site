@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { works } from '../data/portfolio'
+---
+
+<BaseLayout title="Works" description="市川龍太郎の制作実績。Web、ゲーム、ロボコン、コンテスト、インターンなど。">
+  <main
+    id="content"
+    class="tessellation-page relative min-h-screen scroll-mt-[13vh]"
+    data-tab-root
+  >
+    <section class="page-surface min-h-screen px-5 py-14 md:px-8 md:pt-16">
+      <div class="mx-auto flex w-full max-w-[1360px] flex-col justify-center gap-8 md:flex-row">
+      <nav class="side-nav works-side-nav scrollbar-none max-h-[76vh] shrink-0 overflow-y-scroll md:w-[286px] md:border-r" aria-label="Works page navigation">
+        {works.map((work, index) => (
+          <button
+            type="button"
+            class:list={[
+              'side-nav-item group w-full border-b pb-5 pl-0 pr-6 text-right text-slate-900 transition',
+              index === 0 ? 'is-active' : ''
+            ]}
+            data-tab-button={index}
+          >
+            <img src={work.image} alt={work.title} class="mb-1.5 ml-auto aspect-[4/3] w-full max-w-[258px] object-contain grayscale opacity-75 drop-shadow-[0_8px_12px_rgb(24_24_27/0.18)] transition duration-200 group-hover:scale-[1.03] group-hover:grayscale-0 group-hover:opacity-100">
+            <span class="side-nav-label block text-[0.82rem] font-black uppercase tracking-wider text-zinc-600 transition duration-200 group-hover:text-zinc-950">{work.title}</span>
+          </button>
+        ))}
+      </nav>
+
+      <article class="content-panel min-h-[calc(100vh-5rem)] w-full max-w-[1040px] rounded-[10px] p-6 text-zinc-900 md:p-10">
+        {works.map((work, index) => (
+          <section class:list={[index !== 0 ? 'hidden' : '', '']} data-tab-panel={index} aria-labelledby={`work-${index}`}>
+            <header class="content-heading mb-8 pb-5">
+              <h1 id={`work-${index}`} class="text-3xl font-bold md:text-4xl">{work.heading}</h1>
+              <p class="mt-2 text-sm text-neutral-600">{work.title}</p>
+              <p class="mt-1 text-sm font-semibold text-neutral-700">{work.period}</p>
+            </header>
+            <div class="feature-card mb-8 rounded-md p-3">
+              <img src={work.image} alt={work.heading} data-lightbox-image class="max-h-[420px] w-full cursor-zoom-in rounded-md object-contain bg-white">
+            </div>
+            <div class="feature-card space-y-5 rounded-md p-5 text-base leading-8 md:text-lg">
+              {work.body.map((paragraph) => <p>{paragraph}</p>)}
+            </div>
+            <ul class="mt-8 grid gap-3 text-base leading-7 md:grid-cols-2">
+              {work.details.map((detail) => (
+                <li class="feature-card flex gap-3 rounded-md p-4">
+                  <span class="mt-3 h-2 w-2 shrink-0 rounded-full bg-zinc-900"></span>
+                  <span>{detail}</span>
+                </li>
+              ))}
+            </ul>
+            <div class="mt-10 space-y-8">
+              {work.sections.map((section) => (
+                <section class="feature-card rounded-md p-5 md:p-6">
+                  {section.title && <h2 class="mb-5 text-2xl font-bold">{section.title}</h2>}
+                  {section.paragraphs && (
+                    <div class="space-y-5 text-base leading-8 md:text-lg">
+                      {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+                    </div>
+                  )}
+                  {section.links && (
+                    <div class="mt-5 flex flex-wrap gap-3">
+                      {section.links.map((link) => (
+                        <a
+                          class="rounded bg-zinc-900 px-4 py-2 text-sm font-bold text-white transition hover:bg-[#ee7800]"
+                          href={link.url}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {link.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                  {section.images && (
+                    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {section.images.map((image) => (
+                        <img src={image} alt="" data-lightbox-image class="h-full max-h-[320px] w-full cursor-zoom-in rounded-md bg-white object-contain p-2 shadow-[0_6px_18px_rgb(24_24_27/0.05)] transition hover:brightness-95">
+                      ))}
+                    </div>
+                  )}
+                </section>
+              ))}
+            </div>
+          </section>
+        ))}
+      </article>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

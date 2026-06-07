@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+---
+
+<BaseLayout title="Home" description="市川龍太郎のポートフォリオサイト。制作、研究、技術、連絡先を旧サイトの雰囲気を保って掲載しています。">
+  <main
+    id="content"
+    class="tessellation-page relative min-h-screen scroll-mt-[13vh]"
+  >
+    <section class="page-surface flex min-h-screen items-start justify-center px-5 py-12 md:py-16">
+      <article
+        class="content-panel relative mb-auto w-full max-w-[900px] rounded-[8px] px-6 pb-8 pt-24 text-zinc-900 md:px-12"
+        aria-labelledby="home-title"
+      >
+        <h1
+          id="home-title"
+          class="absolute left-[-10px] top-4 w-[calc(100%+20px)] border-y border-red-300/45 bg-red-600/70 px-4 py-3 text-center text-sm font-black tracking-normal text-white shadow-[0_10px_28px_rgb(24_24_27/0.08)] md:text-base"
+        >
+          WELCOME TO MY PORTFOLIO SITE!
+        </h1>
+        <div class="space-y-5 text-base leading-8 md:p-8 md:text-lg md:leading-9">
+          <p>
+            はじめまして、市川 龍太郎 と申します。<br>
+            この度はポートフォリオサイトに足を運んでいただき、誠にありがとうございます。<br>
+            このサイトは、より自分のことを知っていただけるようにと思い作成しました。
+          </p>
+          <p>
+            私は小さい頃から「面白そう」、「楽しそう」と感じることに対し、心の赴くままに挑戦してきました。
+            学生時代ではよく夜遅くまで友人とものづくりをし、こだわりたい部分を作るためにずっと調べものをしながら
+            トライアルアンドエラーを繰り返し、様々なものを作りました。
+            そのため、ものづくりに対する集中力と忍耐力は自信があります。
+          </p>
+          <p>
+            高専時代では実践的な経験を多く積み、大学では数学や物理学、情報学などの基礎理論を深く学び、
+            これから先の技術の変化についていける下地を身につけています。
+          </p>
+          <p>
+            これから先、人生の多くを占める「仕事」を、自分が情熱を持って生きがいを感じ、
+            人に喜んでもらい自分も喜ぶような仕事にしていきたいと考えています。
+            また、常に向上心と情熱の原点を忘れることなく、吸収できるものは全て身に付け、
+            試行錯誤し、様々なことに挑戦していきたいと考えています。
+          </p>
+        </div>
+      </article>
+    </section>
+  </main>
+</BaseLayout>

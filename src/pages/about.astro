@@ -1,0 +1,246 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { hobbies, skillRows } from '../data/portfolio'
+
+const qualifications = [
+  '普通自動車第一種運転免許',
+  '基本情報技術者',
+  '応用情報技術者',
+  'TOEIC 780点',
+  '英検2級'
+]
+
+const achievements = [
+  '第30回全国高専プロコン本選 敢闘賞'
+]
+
+const papers = [
+  {
+    date: '2026/03/02',
+    venue: 'arXiv:2603.02410',
+    title: 'Invariant Curves and the Variational Structure in Tubular Origami Dynamical Systems',
+    url: 'https://arxiv.org/abs/2603.02410'
+  }
+]
+
+const plans = [
+  {
+    date: '2026/09',
+    event: '日本応用数理学会 参加予定',
+    title: '管状折り紙力学系の変分構造と大域的カオス'
+  }
+]
+
+const presentations = [
+  {
+    date: '2025/09/04',
+    event: '日本応用数理学会 2025年度 年会',
+    title: '折り紙写像における不変曲線とアトラクターの存在について'
+  },
+  {
+    date: '2025/01/12',
+    event: 'WINTER ANNUAL CONFERENCE ON DYNAMICAL SYSTEMS 2024',
+    title: 'The existence of invariant curves in Origami maps'
+  },
+  {
+    date: '2024/09/16',
+    event: '日本応用数理学会 2024年度 年会',
+    title: '折り紙写像における不変曲線の存在について'
+  }
+]
+---
+
+<BaseLayout title="About" description="市川龍太郎の経歴、技術、趣味について。">
+  <main
+    id="content"
+    class="tessellation-page relative min-h-screen scroll-mt-[13vh]"
+    data-tab-root
+  >
+    <section class="page-surface min-h-screen px-5 py-14 md:px-8 md:pt-16">
+      <div class="mx-auto flex w-full max-w-[1320px] flex-col justify-center gap-8 md:flex-row">
+      <nav class="side-nav section-side-nav section-nav-panel shrink-0 rounded-[10px] md:min-h-[calc(100vh-5rem)] md:w-[230px]" aria-label="About page navigation">
+        {['経歴', '技術', '資格・実績', '趣味'].map((item, index) => (
+          <button
+            type="button"
+            class:list={[
+              'side-nav-item group w-full text-left text-xl text-slate-700 transition md:text-2xl',
+              index === 0 ? 'is-active' : ''
+            ]}
+            data-tab-button={index}
+          >
+            <span class="side-nav-index" data-tab-dot>{String(index + 1).padStart(2, '0')}</span>
+            <span class="side-nav-label">{item}</span>
+          </button>
+        ))}
+      </nav>
+
+      <article class="content-panel min-h-[calc(100vh-5rem)] w-full max-w-[1040px] rounded-[10px] p-6 text-zinc-900 md:p-10">
+        <section data-tab-panel="0" aria-labelledby="profile-title">
+          <header class="content-heading mb-8 pb-5">
+            <h1 id="profile-title" class="text-2xl font-bold tracking-normal md:text-4xl">市川 龍太郎 / Ryutaro Ichikawa</h1>
+          </header>
+          <div class="feature-card rounded-md p-6 text-base font-semibold leading-8 text-zinc-700 md:p-8 md:text-lg">
+            準備中です。
+          </div>
+        </section>
+
+        <section class="hidden" data-tab-panel="1" aria-labelledby="skills-title">
+          <header class="content-heading mb-6 pb-5">
+            <h1 id="skills-title" class="text-3xl font-bold">技術</h1>
+          </header>
+          <div class="space-y-3 md:pl-5">
+            {skillRows.map((row) => (
+              <section class="flex items-start gap-4 md:gap-6">
+                <button
+                  type="button"
+                  class="group grid h-[70px] w-[70px] shrink-0 place-items-center rounded transition hover:scale-110 hover:bg-white/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ee7800] md:h-[86px] md:w-[86px]"
+                  aria-label={`技術レベル${row.level}`}
+                  title={`技術レベル${row.level}`}
+                  data-info-card
+                  data-info-title={`技術レベル${row.level}`}
+                  data-info-description={row.description}
+                  data-info-image={row.star}
+                >
+                  <img src={row.star} alt="" class="h-[62px] w-[62px] object-contain md:h-[78px] md:w-[78px]">
+                </button>
+                <div class="min-h-[82px] border-l-[3px] border-[#1e4f012f] pl-4 md:min-h-[104px] md:pl-6">
+                  <ul class="flex flex-wrap gap-x-3 gap-y-2 md:gap-x-4 md:gap-y-3">
+                    {row.skills.map((skill) => (
+                      <li>
+                        <button
+                          type="button"
+                          class="group grid h-[64px] w-[64px] place-items-center rounded p-1 transition hover:scale-110 hover:bg-white/65 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ee7800] md:h-[86px] md:w-[86px]"
+                          aria-label={skill.name}
+                          title={skill.name}
+                          data-info-card
+                          data-info-title={skill.name}
+                          data-info-description={skill.description}
+                          data-info-image={skill.icon}
+                        >
+                          <img src={skill.icon} alt="" class="h-[54px] w-[54px] object-contain md:h-[76px] md:w-[76px]">
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
+            ))}
+          </div>
+        </section>
+
+        <section class="hidden" data-tab-panel="2" aria-labelledby="credentials-title">
+          <header class="content-heading mb-8 pb-5">
+            <h1 id="credentials-title" class="text-3xl font-bold">資格・実績</h1>
+            <p class="mt-3 text-sm leading-7 text-zinc-600">資格、受賞、論文、学会発表を時系列とカテゴリで整理しています。</p>
+          </header>
+
+          <div class="grid gap-5 lg:grid-cols-[0.82fr_1.18fr]">
+            <div class="space-y-5">
+              <section class="feature-card rounded-md p-5">
+                <div class="mb-5 flex items-end justify-between gap-4">
+                  <h2 class="text-xl font-bold">資格</h2>
+                  <span class="text-3xl font-bold text-zinc-900/18">{qualifications.length}</span>
+                </div>
+                <ul class="flex flex-wrap gap-2">
+                  {qualifications.map((item) => (
+                    <li class="rounded bg-zinc-900 px-3 py-2 text-sm font-bold text-white shadow-[0_8px_18px_rgb(24_24_27/0.08)]">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section class="feature-card rounded-md p-5">
+                <div class="mb-5 flex items-end justify-between gap-4">
+                  <h2 class="text-xl font-bold">実績・受賞</h2>
+                  <span class="text-3xl font-bold text-zinc-900/18">{achievements.length}</span>
+                </div>
+                <ul class="space-y-3">
+                  {achievements.map((item) => (
+                    <li class="rounded bg-white/70 px-4 py-3 text-base font-semibold leading-7 shadow-[0_6px_14px_rgb(24_24_27/0.035)]">
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section class="feature-card rounded-md p-5">
+                <div class="mb-5 flex items-end justify-between gap-4">
+                  <h2 class="text-xl font-bold">論文</h2>
+                  <span class="text-3xl font-bold text-zinc-900/18">{papers.length}</span>
+                </div>
+                <ul class="space-y-3">
+                  {papers.map((paper) => (
+                    <li class="rounded bg-white/70 p-4 shadow-[0_6px_14px_rgb(24_24_27/0.035)] transition hover:-translate-y-0.5 hover:bg-white">
+                      <div class="mb-3 flex flex-wrap items-center gap-2">
+                        <time class="rounded bg-zinc-900 px-3 py-1 text-xs font-bold text-white">{paper.date}</time>
+                        <span class="text-xs font-bold text-zinc-500">{paper.venue}</span>
+                      </div>
+                      <a class="text-base font-bold leading-7 text-zinc-950 underline decoration-zinc-400 underline-offset-4 transition hover:text-[#ee7800]" href={paper.url} target="_blank" rel="noreferrer">
+                        {paper.title}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section class="feature-card rounded-md p-5">
+                <div class="mb-5 flex items-end justify-between gap-4">
+                  <h2 class="text-xl font-bold">予定</h2>
+                  <span class="text-3xl font-bold text-zinc-900/18">{plans.length}</span>
+                </div>
+                <ul class="space-y-3">
+                  {plans.map((plan) => (
+                    <li class="rounded bg-white/70 p-4 shadow-[0_6px_14px_rgb(24_24_27/0.035)] transition hover:-translate-y-0.5 hover:bg-white">
+                      <div class="mb-3 flex flex-wrap items-center gap-2">
+                        <time class="rounded bg-[#ee7800] px-3 py-1 text-xs font-bold text-white">{plan.date}</time>
+                        <span class="text-xs font-bold text-zinc-500">{plan.event}</span>
+                      </div>
+                      <h3 class="text-base font-bold leading-7 text-zinc-950">{plan.title}</h3>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </div>
+
+            <section class="feature-card rounded-md p-5">
+              <div class="mb-6 flex items-end justify-between gap-4">
+                <div>
+                  <h2 class="text-xl font-bold">学会発表</h2>
+                  <p class="mt-2 text-sm text-zinc-600">新しい発表ほど上に表示しています。</p>
+                </div>
+                <span class="text-3xl font-bold text-zinc-900/18">{presentations.length}</span>
+              </div>
+              <ol class="space-y-4">
+                {presentations.map((presentation) => (
+                  <li class="group grid gap-4 rounded-md bg-white/72 p-4 shadow-[0_8px_20px_rgb(24_24_27/0.045)] transition hover:-translate-y-0.5 hover:bg-white md:grid-cols-[120px_1fr]">
+                    <time class="flex h-full min-h-20 items-center justify-center rounded bg-zinc-900 px-3 py-4 text-center text-sm font-bold text-white">
+                      {presentation.date}
+                    </time>
+                    <div>
+                      <p class="text-sm font-semibold uppercase tracking-normal text-zinc-500">{presentation.event}</p>
+                      <h3 class="mt-2 text-lg font-bold leading-7 text-zinc-950">{presentation.title}</h3>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          </div>
+        </section>
+
+        <section class="hidden" data-tab-panel="3" aria-labelledby="hobbies-title">
+          <h1 id="hobbies-title" class="content-heading mb-8 pb-5 text-3xl font-bold">趣味</h1>
+          <div class="grid gap-5 lg:grid-cols-3">
+            {hobbies.map((hobby) => (
+              <section class="feature-card rounded-md p-5">
+                <h2 class="mb-4 text-center text-xl font-bold">{hobby.title}</h2>
+                <p class="text-base leading-8">{hobby.text}</p>
+              </section>
+            ))}
+          </div>
+        </section>
+      </article>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

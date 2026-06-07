@@ -1,0 +1,52 @@
+# Framework dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.astro
+src/.astro
+src/node_modules
+.cache
+dist
+coverage
+playwright-report
+test-results
+
+# Legacy/reference source kept locally only
+legacy/
+/app.vue
+/assets/
+/components/
+/layouts/
+/pages/
+/server/
+/nuxt.config.ts
+
+# Local planning / handoff notes
+docs/
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Misc
+.DS_Store
+.fleet
+.idea
+.vscode
+.vercel
+.wrangler
+.dev.vars
+*.local
+
+# Local env files
+.env
+.env.*
+!.env.example

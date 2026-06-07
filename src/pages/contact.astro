@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+---
+
+<BaseLayout title="Contact" description="市川龍太郎への連絡先。">
+  <main
+    id="content"
+    class="tessellation-page relative min-h-screen scroll-mt-[13vh]"
+  >
+    <section class="page-surface flex min-h-screen items-start justify-center px-5 py-12 md:py-16">
+      <article
+        class="content-panel relative mb-auto min-h-[calc(100vh-8rem)] w-full max-w-[900px] rounded-[8px] px-6 pb-8 pt-24 text-zinc-900 md:px-12"
+        aria-labelledby="contact-title"
+      >
+        <h1
+          id="contact-title"
+          class="absolute left-[-10px] top-4 w-[calc(100%+20px)] border-y border-red-300/45 bg-red-600/70 px-4 py-3 text-center text-sm font-black tracking-normal text-white shadow-[0_10px_28px_rgb(24_24_27/0.08)] md:text-base"
+        >
+          THANK YOU FOR VISITING MY PORTFOLIO SITE!
+        </h1>
+        <div class="space-y-6 text-base leading-8 md:p-8 md:text-xl md:leading-9">
+          <p>
+            ポートフォリオサイトの閲覧、ありがとうございました。<br>
+            何かご連絡等があれば、以下のメールアドレスまでお願いします。
+          </p>
+          <a class="inline-block break-all text-lg font-bold text-black underline md:text-2xl" href="mailto:kawa.portfolio.contact@gmail.com">
+            kawa.portfolio.contact@gmail.com
+          </a>
+        </div>
+      </article>
+    </section>
+  </main>
+</BaseLayout>

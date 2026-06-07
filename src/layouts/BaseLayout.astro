@@ -1,0 +1,527 @@
+---
+import '../styles/global.css'
+import HeroCanvas from '../components/HeroCanvas.astro'
+import NavIcon from '../components/NavIcon.astro'
+import { navItems } from '../data/portfolio'
+
+type Props = {
+  title?: string
+  description?: string
+  trackVisit?: boolean
+}
+
+const {
+  title = 'Ryutaro Ichikawa Portfolio',
+  description = '市川龍太郎のポートフォリオ。制作実績、研究、技術スタック、連絡先を掲載しています。',
+  trackVisit = true
+} = Astro.props
+
+const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321'
+const canonical = new URL(Astro.url.pathname, siteUrl).toString()
+const pageTitle = title === 'Ryutaro Ichikawa Portfolio' ? title : `${title} | Ryutaro Ichikawa Portfolio`
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{pageTitle}</title>
+    <meta name="description" content={description}>
+    <link rel="canonical" href={canonical}>
+    <link rel="icon" href="/favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;800&display=swap">
+    <meta property="og:title" content={pageTitle}>
+    <meta property="og:description" content={description}>
+    <meta property="og:type" content="website">
+    <meta property="og:url" content={canonical}>
+    <meta property="og:image" content={new URL('/works/portfolio.png', siteUrl).toString()}>
+    <meta name="twitter:card" content="summary_large_image">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: 'Ryutaro Ichikawa',
+      alternateName: '市川 龍太郎',
+      url: siteUrl,
+      email: 'mailto:kawa.portfolio.contact@gmail.com',
+      knowsAbout: ['Web Development', 'Game Development', 'Robotics', 'Dynamical Systems', 'Origami Engineering']
+    })}></script>
+    <script is:inline>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['\\(', '\\)']],
+          displayMath: [['\\[', '\\]']]
+        }
+      }
+    </script>
+    <script is:inline id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  </head>
+  <body>
+    <div class="min-h-screen bg-black text-neutral-900">
+      <section class="relative min-h-[58vh] overflow-hidden bg-black md:min-h-[87vh]" aria-label="Portfolio first view">
+        <div class="pointer-events-none absolute left-0 top-[10vh] z-10 w-full text-center md:left-[-25%] md:top-[20vh]">
+          <p class="font-script m-0 text-[clamp(8.8rem,9vw,10rem)] font-medium leading-none text-black [-webkit-text-stroke:1px_#fff]">
+            Portfolio
+          </p>
+          <p class="font-script -mt-[2.5vh] text-[clamp(5.1rem,3.7vw,4.3rem)] font-medium text-white md:-mt-[-1.6vh]">
+            Ryutaro Ichikawa
+          </p>
+        </div>
+        <HeroCanvas />
+      </section>
+
+      <header class="sticky top-0 z-30 bg-black">
+        <nav class="mx-auto flex min-h-[13vh] w-[min(1180px,calc(100%-40px))] items-center justify-between gap-4 overflow-x-auto py-4" aria-label="Primary navigation">
+          {navItems.map((item, index) => (
+            <a
+              href={item.to}
+              data-nav-to={item.to}
+              data-hero-state={index}
+              data-scroll-content
+              class:list={[
+                'group inline-flex shrink-0 items-center gap-2 text-[clamp(0.95rem,1.4vw,1.25rem)] font-bold text-white outline-none transition hover:text-cyan-300 focus-visible:text-cyan-300',
+                Astro.url.pathname === item.to ? 'text-cyan-300' : ''
+              ]}
+            >
+              <NavIcon name={item.label} />
+              <span>{item.label}</span>
+            </a>
+          ))}
+        </nav>
+      </header>
+
+      <div id="page-content" class="min-h-screen">
+        <slot />
+      </div>
+
+      <footer class="flex justify-center bg-black px-3 py-3 text-center text-sm text-white">
+        © 2026 Ryutaro Ichikawa / Some Icons by Icons8
+      </footer>
+    </div>
+
+    <div
+      data-lightbox
+      hidden
+      class="lightbox-overlay fixed inset-0 z-[80] grid place-items-center bg-black/82 px-4 py-6 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-label="拡大画像"
+    >
+      <button
+        type="button"
+        data-lightbox-close
+        class="absolute right-4 top-4 rounded bg-white/92 px-4 py-2 text-sm font-bold text-zinc-900 shadow-lg transition hover:bg-white md:right-7 md:top-7"
+      >
+        Close
+      </button>
+      <img
+        data-lightbox-target
+        src=""
+        alt=""
+        class="lightbox-image max-h-[88vh] max-w-[94vw] rounded-md bg-white object-contain p-2 shadow-[0_24px_80px_rgb(0_0_0/0.5)]"
+      >
+    </div>
+
+    <div
+      data-info-modal
+      hidden
+      class="info-modal-overlay fixed inset-0 z-[75] grid place-items-center bg-zinc-950/72 px-4 py-6 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-label="詳細情報"
+    >
+      <section class="info-modal-panel w-full max-w-[560px] rounded-[10px] bg-zinc-50 p-5 text-zinc-950 shadow-[0_24px_80px_rgb(0_0_0/0.35)] md:p-6">
+        <div class="mb-5 flex items-start justify-between gap-4">
+          <div class="flex items-center gap-4">
+            <div class="grid h-16 w-16 shrink-0 place-items-center rounded bg-white shadow-[0_10px_28px_rgb(24_24_27/0.08)]">
+              <img data-info-modal-image src="" alt="" class="h-11 w-11 object-contain">
+            </div>
+            <h2 data-info-modal-title class="text-2xl font-bold leading-tight"></h2>
+          </div>
+          <button
+            type="button"
+            data-info-modal-close
+            class="rounded bg-zinc-900 px-3 py-2 text-xs font-bold text-white transition hover:bg-[#ee7800]"
+          >
+            Close
+          </button>
+        </div>
+        <p data-info-modal-description class="text-base leading-8 text-zinc-700"></p>
+      </section>
+    </div>
+
+    {trackVisit && (
+      <script is:inline>
+        (() => {
+          if (window.__portfolioVisitSent) {
+            return
+          }
+          window.__portfolioVisitSent = true
+          const payload = {
+            path: window.location.pathname,
+            referrer: document.referrer || null,
+            language: navigator.language,
+            screen: `${window.screen.width}x${window.screen.height}`
+          }
+          const body = JSON.stringify(payload)
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon('/api/visit', new Blob([body], { type: 'application/json' }))
+            return
+          }
+          fetch('/api/visit', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body,
+            keepalive: true
+          }).catch(() => undefined)
+        })()
+      </script>
+    )}
+    <script>
+      const portfolioWindow = window as typeof window & { __portfolioNavScrollBound?: boolean }
+
+      if (!portfolioWindow.__portfolioNavScrollBound) {
+        portfolioWindow.__portfolioNavScrollBound = true
+
+        const getLegacyContentTop = () => {
+          const zoomValue = (window.outerWidth - 16) / window.innerWidth
+          return Math.max(0, window.innerHeight - 90 * zoomValue)
+        }
+
+        const scrollToLegacyContentTop = (behavior: ScrollBehavior = 'auto') => {
+          window.scrollTo({ top: getLegacyContentTop(), left: 0, behavior })
+        }
+
+        const updateActiveNav = (pathname: string) => {
+          document.querySelectorAll<HTMLAnchorElement>('[data-nav-to]').forEach((link) => {
+            link.classList.toggle('text-cyan-300', link.dataset.navTo === pathname)
+          })
+        }
+
+        const typesetMath = () => {
+          const mathJax = (window as typeof window & { MathJax?: { typesetPromise?: (nodes?: Element[]) => Promise<void> } }).MathJax
+          const pageContent = document.querySelector<HTMLElement>('#page-content')
+          if (mathJax?.typesetPromise && pageContent) {
+            mathJax.typesetPromise([pageContent]).catch(() => undefined)
+          }
+        }
+
+        const bindImageLightbox = () => {
+          const lightbox = document.querySelector<HTMLElement>('[data-lightbox]')
+          const lightboxImage = document.querySelector<HTMLImageElement>('[data-lightbox-target]')
+          const closeButton = document.querySelector<HTMLButtonElement>('[data-lightbox-close]')
+
+          if (!lightbox || !lightboxImage || !closeButton) {
+            return
+          }
+
+          let closeTimer: number | undefined
+          let lightboxScale = 1
+          let lightboxX = 0
+          let lightboxY = 0
+          let isDraggingLightbox = false
+          let dragStartX = 0
+          let dragStartY = 0
+          let dragBaseX = 0
+          let dragBaseY = 0
+
+          const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max)
+
+          const clampLightboxPosition = () => {
+            if (lightboxScale <= 1) {
+              lightboxX = 0
+              lightboxY = 0
+              return
+            }
+
+            const rect = lightboxImage.getBoundingClientRect()
+            const baseWidth = rect.width / lightboxScale
+            const baseHeight = rect.height / lightboxScale
+            const scaledWidth = baseWidth * lightboxScale
+            const scaledHeight = baseHeight * lightboxScale
+            const maxX = Math.max(0, (scaledWidth - window.innerWidth + 64) / 2)
+            const maxY = Math.max(0, (scaledHeight - window.innerHeight + 64) / 2)
+            lightboxX = clamp(lightboxX, -maxX, maxX)
+            lightboxY = clamp(lightboxY, -maxY, maxY)
+          }
+
+          const updateLightboxTransform = () => {
+            clampLightboxPosition()
+            lightboxImage.style.setProperty('--lightbox-scale', String(lightboxScale))
+            lightboxImage.style.setProperty('--lightbox-x', `${lightboxX}px`)
+            lightboxImage.style.setProperty('--lightbox-y', `${lightboxY}px`)
+            lightboxImage.classList.toggle('is-zoomed', lightboxScale > 1.02)
+          }
+
+          const resetLightboxTransform = () => {
+            lightboxScale = 1
+            lightboxX = 0
+            lightboxY = 0
+            isDraggingLightbox = false
+            lightboxImage.classList.remove('is-dragging', 'is-zoomed')
+            updateLightboxTransform()
+          }
+
+          const closeLightbox = () => {
+            if (lightbox.hidden) return
+            lightbox.classList.remove('is-open')
+            closeTimer = window.setTimeout(() => {
+              lightbox.hidden = true
+              lightboxImage.removeAttribute('src')
+              lightboxImage.alt = ''
+              resetLightboxTransform()
+              document.documentElement.classList.remove('lightbox-open')
+            }, 180)
+          }
+
+          const openLightbox = (image: HTMLImageElement) => {
+            if (closeTimer) {
+              window.clearTimeout(closeTimer)
+              closeTimer = undefined
+            }
+            lightboxImage.src = image.currentSrc || image.src
+            lightboxImage.alt = image.alt || '拡大画像'
+            resetLightboxTransform()
+            lightbox.hidden = false
+            document.documentElement.classList.add('lightbox-open')
+            window.requestAnimationFrame(() => {
+              lightbox.classList.add('is-open')
+            })
+            closeButton.focus()
+          }
+
+          lightbox.addEventListener('wheel', (event) => {
+            if (lightbox.hidden) return
+            event.preventDefault()
+
+            const previousScale = lightboxScale
+            const nextScale = clamp(lightboxScale * (event.deltaY < 0 ? 1.16 : 1 / 1.16), 1, 5)
+            if (nextScale === previousScale) return
+
+            const rect = lightboxImage.getBoundingClientRect()
+            const centerX = rect.left + rect.width / 2
+            const centerY = rect.top + rect.height / 2
+            const ratio = nextScale / previousScale
+            lightboxX += (event.clientX - centerX) * (1 - ratio)
+            lightboxY += (event.clientY - centerY) * (1 - ratio)
+            lightboxScale = nextScale
+            updateLightboxTransform()
+          }, { passive: false })
+
+          lightboxImage.addEventListener('pointerdown', (event) => {
+            if (lightboxScale <= 1.02) return
+            event.preventDefault()
+            isDraggingLightbox = true
+            dragStartX = event.clientX
+            dragStartY = event.clientY
+            dragBaseX = lightboxX
+            dragBaseY = lightboxY
+            lightboxImage.classList.add('is-dragging')
+            lightboxImage.setPointerCapture(event.pointerId)
+          })
+
+          lightboxImage.addEventListener('pointermove', (event) => {
+            if (!isDraggingLightbox) return
+            lightboxX = dragBaseX + event.clientX - dragStartX
+            lightboxY = dragBaseY + event.clientY - dragStartY
+            updateLightboxTransform()
+          })
+
+          lightboxImage.addEventListener('pointerup', (event) => {
+            if (!isDraggingLightbox) return
+            isDraggingLightbox = false
+            lightboxImage.classList.remove('is-dragging')
+            lightboxImage.releasePointerCapture(event.pointerId)
+          })
+
+          lightboxImage.addEventListener('dblclick', () => {
+            resetLightboxTransform()
+          })
+
+          document.addEventListener('click', (event) => {
+            const target = event.target
+            if (!(target instanceof Element)) {
+              return
+            }
+
+            const image = target.closest<HTMLImageElement>('[data-lightbox-image]')
+            if (image) {
+              openLightbox(image)
+              return
+            }
+
+            if (target.closest('[data-lightbox-close]') || target === lightbox) {
+              closeLightbox()
+            }
+          })
+
+          document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !lightbox.hidden) {
+              closeLightbox()
+            }
+          })
+        }
+
+        const bindInfoModal = () => {
+          const modal = document.querySelector<HTMLElement>('[data-info-modal]')
+          const title = document.querySelector<HTMLElement>('[data-info-modal-title]')
+          const description = document.querySelector<HTMLElement>('[data-info-modal-description]')
+          const image = document.querySelector<HTMLImageElement>('[data-info-modal-image]')
+          const closeButton = document.querySelector<HTMLButtonElement>('[data-info-modal-close]')
+
+          if (!modal || !title || !description || !image || !closeButton) {
+            return
+          }
+
+          const closeInfoModal = () => {
+            if (modal.hidden) return
+            modal.classList.remove('is-open')
+            window.setTimeout(() => {
+              modal.hidden = true
+              title.textContent = ''
+              description.textContent = ''
+              image.removeAttribute('src')
+              image.alt = ''
+              document.documentElement.classList.remove('modal-open')
+            }, 170)
+          }
+
+          const openInfoModal = (trigger: HTMLElement) => {
+            title.textContent = trigger.dataset.infoTitle || ''
+            description.textContent = trigger.dataset.infoDescription || ''
+            image.src = trigger.dataset.infoImage || ''
+            image.alt = trigger.dataset.infoTitle || ''
+            modal.hidden = false
+            document.documentElement.classList.add('modal-open')
+            window.requestAnimationFrame(() => {
+              modal.classList.add('is-open')
+            })
+            closeButton.focus()
+          }
+
+          document.addEventListener('click', (event) => {
+            const target = event.target
+            if (!(target instanceof Element)) return
+
+            const trigger = target.closest<HTMLElement>('[data-info-card]')
+            if (trigger) {
+              openInfoModal(trigger)
+              return
+            }
+
+            if (target.closest('[data-info-modal-close]') || target === modal) {
+              closeInfoModal()
+            }
+          })
+
+          document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !modal.hidden) {
+              closeInfoModal()
+            }
+          })
+        }
+
+        const bindPortfolioTabs = () => {
+          document.querySelectorAll<HTMLElement>('[data-tab-root]').forEach((root) => {
+            const buttons = root.querySelectorAll<HTMLButtonElement>('[data-tab-button]')
+            const panels = root.querySelectorAll<HTMLElement>('[data-tab-panel]')
+            buttons.forEach((button) => {
+              if (button.dataset.tabBound === 'true') return
+              button.dataset.tabBound = 'true'
+              button.addEventListener('click', () => {
+                const selected = button.dataset.tabButton
+                buttons.forEach((item) => {
+                  const active = item.dataset.tabButton === selected
+                  if (!item.closest('.section-side-nav') && !item.closest('.works-side-nav')) {
+                    item.classList.toggle('text-[#ee7800]', active)
+                  }
+                  item.classList.toggle('is-active', active)
+                })
+                panels.forEach((panel) => {
+                  panel.classList.toggle('hidden', panel.dataset.tabPanel !== selected)
+                })
+                typesetMath()
+              })
+            })
+          })
+        }
+
+        const replacePageContent = async (url: URL, keepScroll: boolean, pushHistory = true) => {
+          const response = await fetch(url.pathname)
+          if (!response.ok) {
+            window.location.href = url.pathname
+            return
+          }
+
+          const html = await response.text()
+          const nextDocument = new DOMParser().parseFromString(html, 'text/html')
+          const nextContent = nextDocument.querySelector<HTMLElement>('#page-content')
+          const currentContent = document.querySelector<HTMLElement>('#page-content')
+
+          if (!nextContent || !currentContent) {
+            window.location.href = url.pathname
+            return
+          }
+
+          currentContent.replaceWith(nextContent)
+          document.title = nextDocument.title
+          if (pushHistory) {
+            history.pushState({}, '', url.pathname)
+          }
+          updateActiveNav(url.pathname)
+          bindPortfolioTabs()
+          typesetMath()
+
+          if (keepScroll) {
+            scrollToLegacyContentTop('auto')
+            return
+          }
+
+          scrollToLegacyContentTop('smooth')
+        }
+
+        const bindPortfolioNav = () => {
+          bindPortfolioTabs()
+          bindImageLightbox()
+          bindInfoModal()
+          document.querySelectorAll<HTMLAnchorElement>('[data-scroll-content]').forEach((link) => {
+            if (link.dataset.scrollBound === 'true') return
+            link.dataset.scrollBound = 'true'
+            link.addEventListener('click', (event) => {
+              const url = new URL(link.href)
+              if (url.origin !== window.location.origin) {
+                return
+              }
+
+              const atContentHeight = window.scrollY >= getLegacyContentTop() - 8
+              const stateIndex = Number(link.dataset.heroState || 0)
+              window.dispatchEvent(new CustomEvent('portfolio:hero-state', { detail: stateIndex }))
+
+              if (url.pathname === window.location.pathname) {
+                event.preventDefault()
+                if (!atContentHeight) {
+                  scrollToLegacyContentTop('smooth')
+                }
+                return
+              }
+
+              event.preventDefault()
+              replacePageContent(url, atContentHeight).catch(() => {
+                window.location.href = url.pathname
+              })
+            })
+          })
+        }
+
+        bindPortfolioNav()
+
+        window.addEventListener('popstate', () => {
+          const url = new URL(window.location.href)
+          replacePageContent(url, true, false).catch(() => window.location.reload())
+        })
+      }
+    </script>
+  </body>
+</html>

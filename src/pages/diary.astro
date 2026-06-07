@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+
+const entries = [
+  {
+    date: '2026/06/07',
+    title: 'Portfolio renewal log',
+    category: '制作メモ',
+    body: '旧サイトの雰囲気を残しながら、Astro と Three.js を中心にした構成へ移行しています。見た目、操作感、記事の読みやすさを少しずつ調整しています。'
+  }
+]
+---
+
+<BaseLayout title="Diary" description="市川龍太郎の日記、制作メモ、研究メモ。">
+  <main
+    id="content"
+    class="tessellation-page relative min-h-screen scroll-mt-[13vh]"
+  >
+    <section class="page-surface flex min-h-screen items-start justify-center px-5 py-14 md:px-8 md:py-16">
+      <article class="content-panel min-h-[calc(100vh-8rem)] w-full max-w-[980px] rounded-[10px] p-6 text-zinc-900 md:p-10">
+        <header class="content-heading mb-8 pb-5">
+          <h1 class="text-3xl font-bold md:text-4xl">Diary</h1>
+          <p class="mt-3 text-base leading-7 text-zinc-600">
+            日々の制作、研究、考えたことを短く残していく場所です。
+          </p>
+        </header>
+
+        <div class="space-y-5">
+          {entries.map((entry) => (
+            <article class="feature-card rounded-md p-5 transition hover:-translate-y-0.5 hover:bg-white/86 md:p-6">
+              <div class="mb-4 flex flex-wrap items-center gap-3 text-sm text-zinc-600">
+                <time class="font-semibold">{entry.date}</time>
+                <span class="rounded bg-zinc-900 px-3 py-1 text-xs font-bold text-white">{entry.category}</span>
+              </div>
+              <h2 class="text-2xl font-bold">{entry.title}</h2>
+              <p class="mt-4 text-base leading-8 md:text-lg">{entry.body}</p>
+            </article>
+          ))}
+        </div>
+      </article>
+    </section>
+  </main>
+</BaseLayout>

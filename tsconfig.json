@@ -1,0 +1,24 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "types": ["astro/client"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": [
+    ".astro/types.d.ts",
+    "src/**/*",
+    "functions/**/*",
+    "astro.config.mjs",
+    "drizzle.config.ts"
+  ],
+  "exclude": [
+    "app",
+    "legacy",
+    "server",
+    "node_modules",
+    "dist"
+  ]
+}
