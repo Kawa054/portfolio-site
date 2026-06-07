@@ -73,3 +73,4 @@ Recommended deployment target is Cloudflare Pages.
 ## Legacy Source
 
 The previous Vue/Nuxt implementation is preserved under `legacy/` as reference material only. The active implementation is under `src/`.
+# portfolio-site
