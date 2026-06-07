@@ -19,12 +19,18 @@ type VisitRow = {
   screen: string | null
   user_agent: string | null
   visitor_hash: string
+  country?: string | null
+  region?: string | null
+  city?: string | null
+  asn?: number | null
+  as_organization?: string | null
+  colo?: string | null
 }
 
-const topCounts = (rows: VisitRow[], key: keyof Pick<VisitRow, 'path' | 'referrer'>) => {
+const topCounts = (rows: VisitRow[], getValue: (row: VisitRow) => string | null | undefined) => {
   const counts = new Map<string, number>()
   rows.forEach((row) => {
-    const value = row[key] || '(direct)'
+    const value = getValue(row) || '(unknown)'
     counts.set(value, (counts.get(value) || 0) + 1)
   })
   return [...counts.entries()]
@@ -62,7 +68,7 @@ export const onRequestGet = async ({ request, env }: PagesContext) => {
 
   const { data, error } = await supabase
     .from('visits')
-    .select('created_at,path,referrer,language,screen,user_agent,visitor_hash')
+    .select('*')
     .order('created_at', { ascending: false })
     .limit(1000)
 
@@ -80,14 +86,22 @@ export const onRequestGet = async ({ request, env }: PagesContext) => {
     today,
     visitors,
     rowsLoaded: rows.length,
-    pages: topCounts(rows, 'path'),
-    referrers: topCounts(rows, 'referrer'),
-    recent: rows.slice(0, 80).map(({ created_at, path, referrer, language, screen }) => ({
+    pages: topCounts(rows, (row) => row.path),
+    referrers: topCounts(rows, (row) => row.referrer || '(direct)'),
+    locations: topCounts(rows, (row) => [row.country, row.region, row.city].filter(Boolean).join(' / ')),
+    organizations: topCounts(rows, (row) => row.as_organization || (row.asn ? `ASN ${row.asn}` : null)),
+    recent: rows.slice(0, 80).map(({ created_at, path, referrer, language, screen, country, region, city, asn, as_organization, colo }) => ({
       created_at,
       path,
       referrer,
       language,
-      screen
+      screen,
+      country,
+      region,
+      city,
+      asn,
+      as_organization,
+      colo
     }))
   })
 }

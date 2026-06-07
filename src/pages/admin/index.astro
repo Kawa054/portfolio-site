@@ -50,12 +50,23 @@ import AdminLayout from '../../layouts/AdminLayout.astro'
         </section>
       </div>
 
+      <div class="mt-8 grid gap-6 lg:grid-cols-2">
+        <section class="rounded border border-white/15 bg-white/8 p-5">
+          <h2 class="mb-4 text-xl font-bold">Locations</h2>
+          <div id="locations-list" class="space-y-3 text-sm"></div>
+        </section>
+        <section class="rounded border border-white/15 bg-white/8 p-5">
+          <h2 class="mb-4 text-xl font-bold">Networks / Organizations</h2>
+          <div id="organizations-list" class="space-y-3 text-sm"></div>
+        </section>
+      </div>
+
       <section class="mt-8 overflow-hidden rounded border border-white/15 bg-white/8">
         <div class="border-b border-white/15 p-5">
           <h2 class="text-xl font-bold">Recent Visits</h2>
         </div>
         <div class="overflow-x-auto">
-          <table class="w-full min-w-[760px] text-left text-sm">
+          <table class="w-full min-w-[1120px] text-left text-sm">
             <thead class="bg-white/10 text-neutral-300">
               <tr>
                 <th class="px-4 py-3">Time</th>
@@ -63,6 +74,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro'
                 <th class="px-4 py-3">Referrer</th>
                 <th class="px-4 py-3">Language</th>
                 <th class="px-4 py-3">Screen</th>
+                <th class="px-4 py-3">Location</th>
+                <th class="px-4 py-3">Network</th>
+                <th class="px-4 py-3">Edge</th>
               </tr>
             </thead>
             <tbody id="recent-table" class="divide-y divide-white/10"></tbody>
@@ -82,12 +96,20 @@ import AdminLayout from '../../layouts/AdminLayout.astro'
       rowsLoaded: number
       pages: Array<{ key: string; count: number }>
       referrers: Array<{ key: string; count: number }>
+      locations: Array<{ key: string; count: number }>
+      organizations: Array<{ key: string; count: number }>
       recent: Array<{
         created_at: string
         path: string
         referrer: string | null
         language: string | null
         screen: string | null
+        country?: string | null
+        region?: string | null
+        city?: string | null
+        asn?: number | null
+        as_organization?: string | null
+        colo?: string | null
       }>
     }
 
@@ -111,9 +133,21 @@ import AdminLayout from '../../layouts/AdminLayout.astro'
       rows.forEach((row) => {
         const item = document.createElement('div')
         item.className = 'flex items-center justify-between gap-4 border-b border-white/10 pb-2'
-        item.innerHTML = `<span class="truncate">${row.key}</span><strong>${row.count}</strong>`
+        const label = document.createElement('span')
+        label.className = 'truncate'
+        label.textContent = row.key
+        const count = document.createElement('strong')
+        count.textContent = String(row.count)
+        item.append(label, count)
         element.append(item)
       })
+    }
+
+    const cell = (content: string) => {
+      const td = document.createElement('td')
+      td.className = 'px-4 py-3'
+      td.textContent = content || '-'
+      return td
     }
 
     const renderRecent = (rows: Summary['recent']) => {
@@ -123,13 +157,22 @@ import AdminLayout from '../../layouts/AdminLayout.astro'
       rows.forEach((row) => {
         const tr = document.createElement('tr')
         const time = new Date(row.created_at).toLocaleString()
-        tr.innerHTML = `
-          <td class="px-4 py-3 text-neutral-300">${time}</td>
-          <td class="px-4 py-3">${row.path}</td>
-          <td class="px-4 py-3 text-neutral-300">${row.referrer || '-'}</td>
-          <td class="px-4 py-3">${row.language || '-'}</td>
-          <td class="px-4 py-3">${row.screen || '-'}</td>
-        `
+        const location = [row.country, row.region, row.city].filter(Boolean).join(' / ')
+        const network = [row.as_organization, row.asn ? `ASN ${row.asn}` : null].filter(Boolean).join(' / ')
+        const timeCell = cell(time)
+        timeCell.classList.add('text-neutral-300')
+        const referrerCell = cell(row.referrer || '-')
+        referrerCell.classList.add('text-neutral-300')
+        tr.append(
+          timeCell,
+          cell(row.path),
+          referrerCell,
+          cell(row.language || '-'),
+          cell(row.screen || '-'),
+          cell(location),
+          cell(network),
+          cell(row.colo || '-')
+        )
         table.append(tr)
       })
     }
@@ -159,6 +202,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro'
           text('#rows', summary.rowsLoaded)
           renderList('#pages-list', summary.pages)
           renderList('#referrers-list', summary.referrers)
+          renderList('#locations-list', summary.locations || [])
+          renderList('#organizations-list', summary.organizations || [])
           renderRecent(summary.recent)
           setStatus('最新1000件をもとに集計しています。')
         }
