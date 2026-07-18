@@ -148,8 +148,14 @@ const bindExperiment = (root: HTMLElement) => {
     })
   })
 
-  const resizeObserver = new ResizeObserver(render)
-  resizeObserver.observe(elements.canvas)
+  document.addEventListener('portfolio:tab-change', render)
+  const ResizeObserverClass = (window as unknown as { ResizeObserver?: typeof ResizeObserver }).ResizeObserver
+  if (ResizeObserverClass) {
+    const resizeObserver = new ResizeObserverClass(render)
+    resizeObserver.observe(elements.canvas)
+  } else {
+    window.addEventListener('resize', render)
+  }
   render()
 }
 
