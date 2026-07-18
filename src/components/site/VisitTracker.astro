@@ -1,0 +1,26 @@
+<script is:inline>
+  (() => {
+    if (window.__portfolioVisitSent) {
+      return
+    }
+    window.__portfolioVisitSent = true
+    const payload = {
+      path: window.location.pathname,
+      referrer: document.referrer || null,
+      language: navigator.language,
+      screen: `${window.screen.width}x${window.screen.height}`
+    }
+    const body = JSON.stringify(payload)
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon('/api/visit', new Blob([body], { type: 'application/json' }))
+      return
+    }
+    fetch('/api/visit', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body,
+      keepalive: true
+    }).catch(() => undefined)
+  })()
+</script>
+

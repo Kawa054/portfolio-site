@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
-import { works } from '../data/portfolio'
+import ContentParagraph from '../components/content/ContentParagraph.astro'
+import { works } from '../data/works'
 ---
 
 <BaseLayout title="Works" description="市川龍太郎の制作実績。Web、ゲーム、ロボコン、コンテスト、インターンなど。">
@@ -56,7 +57,7 @@ import { works } from '../data/portfolio'
                   {section.title && <h2 class="mb-5 text-2xl font-bold">{section.title}</h2>}
                   {section.paragraphs && (
                     <div class="space-y-5 text-base leading-8 md:text-lg">
-                      {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+                      {section.paragraphs.map((paragraph) => <ContentParagraph paragraph={paragraph} />)}
                     </div>
                   )}
                   {section.links && (

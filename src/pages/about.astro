@@ -1,113 +1,24 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
-import { hobbies, skillRows } from '../data/portfolio'
+import {
+  achievements,
+  careerEntries,
+  hobbies,
+  papers,
+  presentations,
+  qualifications,
+  skillRows
+} from '../data/about'
 import { ArrowUpRight, CodeXml, GraduationCap, Landmark, School } from '@lucide/astro'
 
-const career = [
-  {
-    period: '2016 - 2021',
-    organization: '熊本高等専門学校',
-    detail: '人間情報システム工学科',
-    duration: '5年間',
-    note: '',
-    achievement: '卒業時席次1位',
-    icon: School,
-    iconClass: 'bg-[#0f766e] text-white',
-    works: [
-      { title: 'Rolling Snow', image: '/works/rs.png', href: '/works?work=5#content' },
-      { title: 'Androidアプリ開発インターン', image: '/works/intern.png', href: '/works?work=4#content' },
-      { title: 'CCCeB', image: '/works/procon.png', href: '/works?work=3#content' }
-    ]
-  },
-  {
-    period: '2021 - 2024',
-    organization: '京都大学',
-    detail: '工学部 情報学科 数理工学コース',
-    duration: '3年間',
-    note: '2年次編入',
-    achievement: '',
-    icon: Landmark,
-    iconClass: 'bg-zinc-900 text-white',
-    works: [
-      { title: 'NHKロボットコンテスト', image: '/works/robocon.png', href: '/works?work=2#content' },
-      { title: 'MinDiger', image: '/works/mindiger.png', href: '/works?work=1#content' }
-    ]
-  },
-  {
-    period: '2024 - 2026',
-    organization: '京都大学大学院',
-    detail: '情報学研究科 数理工学コース',
-    duration: '2年間',
-    note: '',
-    achievement: '',
-    icon: GraduationCap,
-    iconClass: 'bg-[#b91c1c] text-white',
-    works: [
-      { title: 'ポートフォリオサイト', image: '/works/portfolio.png', href: '/works?work=0#content' },
-      { title: '折り紙力学系の研究', image: '/origami/tess.png', href: '/reserch?topic=1#content' }
-    ]
-  },
-  {
-    period: '2026 - 現在',
-    organization: '通信系大手企業',
-    detail: 'Software Engineer',
-    duration: '',
-    note: '',
-    achievement: '',
-    icon: CodeXml,
-    iconClass: 'bg-[#0369a1] text-white',
-    works: []
-  }
-]
-
-const qualifications = [
-  '普通自動車第一種運転免許',
-  '基本情報技術者',
-  '応用情報技術者',
-  'TOEIC 780点',
-  '英検2級'
-]
-
-const achievements = [
-  '第30回全国高専プロコン本選 敢闘賞'
-]
-
-const papers = [
-  {
-    date: '2026/06/24',
-    venue: 'Chaos 36, 063139 (2026)',
-    title: 'Invariant curves and the variational structure in tubular origami dynamical systems',
-    url: 'https://doi.org/10.1063/5.0332738'
-  }
-]
-
-const presentations = [
-  {
-    date: '2026/09',
-    event: '日本応用数理学会',
-    title: '管状折り紙力学系の変分構造と大域的カオス',
-    planned: true
-  },
-  {
-    date: '2025/09/04',
-    event: '日本応用数理学会 2025年度 年会',
-    title: '折り紙写像における不変曲線とアトラクターの存在について',
-    planned: false
-  },
-  {
-    date: '2025/01/12',
-    event: 'WINTER ANNUAL CONFERENCE ON DYNAMICAL SYSTEMS 2024',
-    title: 'The existence of invariant curves in Origami maps',
-    planned: false
-  },
-  {
-    date: '2024/09/16',
-    event: '日本応用数理学会 2024年度 年会',
-    title: '折り紙写像における不変曲線の存在について',
-    planned: false
-  }
-]
+const careerIcons = {
+  school: School,
+  university: Landmark,
+  graduate: GraduationCap,
+  work: CodeXml
+}
 ---
+
 
 <BaseLayout title="About" description="市川龍太郎の経歴、技術、趣味について。">
   <main
@@ -139,8 +50,8 @@ const presentations = [
             <h1 id="profile-title" class="text-2xl font-bold tracking-normal md:text-4xl">市川 龍太郎 / Ryutaro Ichikawa</h1>
           </header>
           <ol>
-            {career.map((item, index) => {
-              const Icon = item.icon
+            {careerEntries.map((item, index) => {
+              const Icon = careerIcons[item.icon]
 
               return (
                 <li class="grid grid-cols-[48px_minmax(0,1fr)] gap-x-4 md:grid-cols-[132px_56px_minmax(0,1fr)] md:gap-x-6">
@@ -149,7 +60,7 @@ const presentations = [
                   </time>
 
                   <div class="relative col-start-1 row-span-2 row-start-1 flex justify-center self-stretch md:col-start-2 md:row-span-1">
-                    {index !== career.length - 1 && (
+                    {index !== careerEntries.length - 1 && (
                       <span class="absolute bottom-[-24px] top-6 w-px bg-zinc-900/20 md:bottom-[-28px] md:top-7"></span>
                     )}
                     <span class:list={[
@@ -162,7 +73,7 @@ const presentations = [
 
                   <div class:list={[
                     'col-start-2 row-start-2 min-w-0 md:col-start-3 md:row-start-1',
-                    index !== career.length - 1 ? 'pb-8' : ''
+                    index !== careerEntries.length - 1 ? 'pb-8' : ''
                   ]}>
                     <div class="min-w-0">
                       <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">

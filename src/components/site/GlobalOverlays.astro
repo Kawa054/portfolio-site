@@ -1,0 +1,51 @@
+<div
+  data-lightbox
+  hidden
+  class="lightbox-overlay fixed inset-0 z-[80] grid place-items-center bg-black/82 px-4 py-6 backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-label="拡大画像"
+>
+  <button
+    type="button"
+    data-lightbox-close
+    class="absolute right-4 top-4 rounded bg-white/92 px-4 py-2 text-sm font-bold text-zinc-900 shadow-lg transition hover:bg-white md:right-7 md:top-7"
+  >
+    Close
+  </button>
+  <img
+    data-lightbox-target
+    src=""
+    alt=""
+    class="lightbox-image max-h-[88vh] max-w-[94vw] rounded-md bg-white object-contain p-2 shadow-[0_24px_80px_rgb(0_0_0/0.5)]"
+  >
+</div>
+
+<div
+  data-info-modal
+  hidden
+  class="info-modal-overlay fixed inset-0 z-[75] grid place-items-center bg-zinc-950/72 px-4 py-6 backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-label="詳細情報"
+>
+  <section class="info-modal-panel w-full max-w-[560px] rounded-[10px] bg-zinc-50 p-5 text-zinc-950 shadow-[0_24px_80px_rgb(0_0_0/0.35)] md:p-6">
+    <div class="mb-5 flex items-start justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="grid h-16 w-16 shrink-0 place-items-center rounded bg-white shadow-[0_10px_28px_rgb(24_24_27/0.08)]">
+          <img data-info-modal-image src="" alt="" class="h-11 w-11 object-contain">
+        </div>
+        <h2 data-info-modal-title class="text-2xl font-bold leading-tight"></h2>
+      </div>
+      <button
+        type="button"
+        data-info-modal-close
+        class="rounded bg-zinc-900 px-3 py-2 text-xs font-bold text-white transition hover:bg-[#ee7800]"
+      >
+        Close
+      </button>
+    </div>
+    <p data-info-modal-description class="text-base leading-8 text-zinc-700"></p>
+  </section>
+</div>
+

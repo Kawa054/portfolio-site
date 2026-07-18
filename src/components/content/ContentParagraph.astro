@@ -1,0 +1,26 @@
+---
+import type { ContentParagraph } from '../../data/types'
+
+type Props = {
+  paragraph: ContentParagraph
+}
+
+const { paragraph } = Astro.props
+---
+
+<p>
+  {typeof paragraph === 'string'
+    ? paragraph
+    : paragraph.map((part) => (
+        typeof part === 'string'
+          ? part
+          : (
+              <a
+                class="font-medium text-[#007f8f] underline decoration-[#007f8f]/40 underline-offset-4 transition hover:text-[#d95f02] hover:decoration-[#d95f02]"
+                href={part.url}
+                target="_blank"
+                rel="noreferrer"
+              >{part.label}</a>
+            )
+      ))}
+</p>

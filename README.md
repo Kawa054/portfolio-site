@@ -20,6 +20,10 @@ npm ci
 npm run dev
 ```
 
+## Project Structure
+
+Content, page rendering, shared UI, and browser behavior are separated by responsibility. See [docs/architecture.md](docs/architecture.md) for the file map and extension rules.
+
 ## Environment Variables
 
 Copy `.env.example` to `.env` and set values as needed.

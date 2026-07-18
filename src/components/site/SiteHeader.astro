@@ -1,0 +1,31 @@
+---
+import NavIcon from '../NavIcon.astro'
+import { navItems } from '../../data/navigation'
+
+type Props = {
+  pathname: string
+}
+
+const { pathname } = Astro.props
+---
+
+<header class="sticky top-0 z-30 bg-black">
+  <nav class="mx-auto flex min-h-[13vh] w-[min(1180px,calc(100%-40px))] items-center justify-between gap-4 overflow-x-auto py-4" aria-label="Primary navigation">
+    {navItems.map((item, index) => (
+      <a
+        href={item.to}
+        data-nav-to={item.to}
+        data-hero-state={index}
+        data-scroll-content
+        class:list={[
+          'group inline-flex shrink-0 items-center gap-2 text-[clamp(0.95rem,1.4vw,1.25rem)] font-bold text-white outline-none transition hover:text-cyan-300 focus-visible:text-cyan-300',
+          pathname === item.to ? 'text-cyan-300' : ''
+        ]}
+      >
+        <NavIcon name={item.label} />
+        <span>{item.label}</span>
+      </a>
+    ))}
+  </nav>
+</header>
+

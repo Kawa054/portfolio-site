@@ -1,17 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
+import { diaryEntries } from '../data/diary'
 import { ArrowUpRight, FileText, House } from '@lucide/astro'
-
-const entries = [
-  {
-    id: 'portfolio-renewal',
-    date: '2026/06/07',
-    title: 'Portfolio renewal log',
-    category: '制作メモ',
-    body: '旧サイトの雰囲気を残しながら、Astro と Three.js を中心にした構成へ移行しています。見た目、操作感、記事の読みやすさを少しずつ調整しています。'
-  }
-]
 ---
+
 
 <BaseLayout title="Diary" description="市川龍太郎の日記、制作メモ、研究メモ。">
   <main
@@ -38,7 +30,7 @@ const entries = [
             </span>
           </button>
 
-          {entries.map((entry) => (
+          {diaryEntries.map((entry) => (
             <button
               type="button"
               class="side-nav-item group w-full text-left text-zinc-700 transition"
@@ -74,7 +66,7 @@ const entries = [
                 <span class="text-sm font-semibold text-zinc-500">Latest entries</span>
               </div>
               <ul class="space-y-3">
-                {entries.slice(0, 4).map((entry) => (
+                {diaryEntries.slice(0, 4).map((entry) => (
                   <li>
                     <a
                       href={`/diary?entry=${entry.id}#content`}
@@ -96,7 +88,7 @@ const entries = [
             </section>
           </section>
 
-          {entries.map((entry, index) => (
+          {diaryEntries.map((entry, index) => (
             <section
               class="hidden"
               data-tab-panel={entry.id}

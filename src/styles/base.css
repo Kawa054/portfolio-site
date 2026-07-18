@@ -1,0 +1,65 @@
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-width: 320px;
+    margin: 0;
+    background: #000;
+    color: #222;
+    font-family: "Noto Sans JP", Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    letter-spacing: 0;
+  }
+
+  html.lightbox-open,
+  html.lightbox-open body,
+  html.modal-open,
+  html.modal-open body {
+    overflow: hidden;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  ::view-transition,
+  ::view-transition-group(root),
+  ::view-transition-image-pair(root),
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+    mix-blend-mode: normal !important;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    opacity: 1 !important;
+  }
+}
+
+@layer utilities {
+  .font-script {
+    font-family: "Dancing Script", cursive;
+  }
+
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
