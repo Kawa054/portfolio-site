@@ -25,6 +25,9 @@ export const bindPortfolioTabs = () => {
       }
 
       typesetMath()
+      window.requestAnimationFrame(() => {
+        document.dispatchEvent(new CustomEvent('portfolio:tab-change'))
+      })
     }
 
     buttons.forEach((button) => {
@@ -47,4 +50,3 @@ export const bindPortfolioTabs = () => {
     }
   })
 }
-
