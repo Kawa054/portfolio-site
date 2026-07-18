@@ -9,6 +9,7 @@
     "typecheck": "XDG_CONFIG_HOME=/tmp ASTRO_TELEMETRY_DISABLED=1 astro check"
   },
   "dependencies": {
+    "@lucide/astro": "^1.25.0",
     "@supabase/supabase-js": "^2.107.0",
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.4.4",
