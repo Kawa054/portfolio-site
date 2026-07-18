@@ -137,11 +137,6 @@
   }
 
   .content-panel {
-    background: rgb(250 250 250 / 0.92);
-    box-shadow: 0 18px 42px rgb(24 24 27 / 0.08);
-  }
-
-  .home-intro-panel {
     border: 1px solid rgb(24 24 27 / 0.14);
     background:
       linear-gradient(#dc2626, #dc2626) left top / 56px 2px no-repeat,
@@ -344,6 +339,35 @@
   .section-side-nav .side-nav-item:hover .side-nav-label,
   .section-side-nav .side-nav-item.is-active .side-nav-label {
     transform: translateX(4px);
+  }
+
+  .diary-side-nav::before {
+    display: none;
+  }
+
+  .diary-side-nav .side-nav-item {
+    grid-template-columns: 24px minmax(0, 1fr);
+    min-height: 68px;
+    gap: 12px;
+    padding: 8px 10px;
+  }
+
+  .diary-side-nav .side-nav-item::before {
+    inset: 4px 0;
+    transform-origin: center;
+  }
+
+  .diary-nav-icon {
+    position: relative;
+    z-index: 1;
+    color: #71717a;
+    transition: color 160ms ease, transform 160ms ease;
+  }
+
+  .diary-side-nav .side-nav-item:hover .diary-nav-icon,
+  .diary-side-nav .side-nav-item.is-active .diary-nav-icon {
+    color: #b91c1c;
+    transform: scale(1.06);
   }
 
   .feature-card {

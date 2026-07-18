@@ -8,12 +8,14 @@ type Props = {
   title?: string
   description?: string
   trackVisit?: boolean
+  compactContent?: boolean
 }
 
 const {
   title = 'Ryutaro Ichikawa Portfolio',
   description = '市川龍太郎のポートフォリオ。制作実績、研究、技術スタック、連絡先を掲載しています。',
-  trackVisit = true
+  trackVisit = true,
+  compactContent = false
 } = Astro.props
 
 const siteUrl = import.meta.env.PUBLIC_SITE_URL || 'http://localhost:4321'
@@ -92,7 +94,7 @@ const pageTitle = title === 'Ryutaro Ichikawa Portfolio' ? title : `${title} | R
         </nav>
       </header>
 
-      <div id="page-content" class="min-h-screen">
+      <div id="page-content" class:list={[compactContent ? '' : 'min-h-screen']}>
         <slot />
       </div>
 
