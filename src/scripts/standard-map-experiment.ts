@@ -2,7 +2,9 @@ const TAU = 2 * Math.PI
 const COLORS = ['#006d77', '#c2410c', '#1d4f91', '#3f7d20', '#9d3d7d', '#5b3fa3', '#a66f00']
 
 type ExperimentElements = {
+  stage: HTMLElement
   canvas: HTMLCanvasElement
+  outputImage: HTMLImageElement
   epsilonInput: HTMLInputElement
   epsilonOutput: HTMLOutputElement
   presetButtons: HTMLButtonElement[]
@@ -14,26 +16,26 @@ const moduloTau = (value: number) => {
 }
 
 const getElements = (root: HTMLElement): ExperimentElements | null => {
+  const stage = root.querySelector<HTMLElement>('[data-standard-map-stage]')
   const canvas = root.querySelector<HTMLCanvasElement>('[data-standard-map-canvas]')
+  const outputImage = root.querySelector<HTMLImageElement>('[data-standard-map-output]')
   const epsilonInput = root.querySelector<HTMLInputElement>('[data-epsilon-input]')
   const epsilonOutput = root.querySelector<HTMLOutputElement>('[data-epsilon-output]')
   const presetButtons = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-epsilon-preset]'))
 
-  if (!canvas || !epsilonInput || !epsilonOutput) return null
-  return { canvas, epsilonInput, epsilonOutput, presetButtons }
+  if (!stage || !canvas || !outputImage || !epsilonInput || !epsilonOutput) return null
+  return { stage, canvas, outputImage, epsilonInput, epsilonOutput, presetButtons }
 }
 
-const drawPhasePortrait = (canvas: HTMLCanvasElement, epsilon: number) => {
-  const bounds = canvas.getBoundingClientRect()
-  const size = Math.floor(Math.min(bounds.width, bounds.height))
-  if (size <= 0) return
+const drawPhasePortrait = (canvas: HTMLCanvasElement, size: number, epsilon: number) => {
+  if (size <= 0) return false
 
   const pixelRatio = Math.min(window.devicePixelRatio || 1, 2)
   canvas.width = Math.round(size * pixelRatio)
   canvas.height = Math.round(size * pixelRatio)
 
   const context = canvas.getContext('2d')
-  if (!context) return
+  if (!context) return false
 
   context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
   context.clearRect(0, 0, size, size)
@@ -114,6 +116,7 @@ const drawPhasePortrait = (canvas: HTMLCanvasElement, epsilon: number) => {
   context.textAlign = 'center'
   context.fillText('θₘ', left + plotWidth / 2, size - bottom / 3)
   context.fillText('Iₘ', left * 0.38, top + plotHeight / 2)
+  return true
 }
 
 const bindExperiment = (root: HTMLElement) => {
@@ -123,6 +126,8 @@ const bindExperiment = (root: HTMLElement) => {
 
   root.dataset.standardMapBound = 'true'
   let drawFrame = 0
+  let outputVersion = 0
+  let outputUrl = ''
 
   const render = () => {
     window.cancelAnimationFrame(drawFrame)
@@ -136,7 +141,30 @@ const bindExperiment = (root: HTMLElement) => {
         button.classList.toggle('text-white', active)
         button.classList.toggle('text-zinc-600', !active)
       })
-      drawPhasePortrait(elements.canvas, epsilon)
+
+      const bounds = elements.stage.getBoundingClientRect()
+      const size = Math.floor(Math.min(bounds.width, bounds.height))
+      if (!drawPhasePortrait(elements.canvas, size, epsilon)) return
+
+      const currentVersion = ++outputVersion
+      const updateOutput = (url: string) => {
+        if (currentVersion !== outputVersion) {
+          URL.revokeObjectURL(url)
+          return
+        }
+        if (outputUrl) URL.revokeObjectURL(outputUrl)
+        outputUrl = url
+        elements.outputImage.src = url
+        elements.outputImage.alt = `標準写像の相図。横軸はtheta、縦軸はI、摂動パラメータepsilonは${epsilon.toFixed(2)}。`
+      }
+
+      if (elements.canvas.toBlob) {
+        elements.canvas.toBlob((blob) => {
+          if (blob) updateOutput(URL.createObjectURL(blob))
+        }, 'image/png')
+      } else {
+        elements.outputImage.src = elements.canvas.toDataURL('image/png')
+      }
     })
   }
 
@@ -152,7 +180,7 @@ const bindExperiment = (root: HTMLElement) => {
   const ResizeObserverClass = (window as unknown as { ResizeObserver?: typeof ResizeObserver }).ResizeObserver
   if (ResizeObserverClass) {
     const resizeObserver = new ResizeObserverClass(render)
-    resizeObserver.observe(elements.canvas)
+    resizeObserver.observe(elements.stage)
   } else {
     window.addEventListener('resize', render)
   }
