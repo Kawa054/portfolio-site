@@ -1,31 +1,43 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
+import { ArrowUpRight, Mail } from '@lucide/astro'
 ---
 
-<BaseLayout title="Contact" description="市川龍太郎への連絡先。">
+<BaseLayout title="Contact" description="市川龍太郎への連絡先。" compactContent>
   <main
     id="content"
-    class="tessellation-page relative min-h-screen scroll-mt-[13vh]"
+    class="tessellation-page relative scroll-mt-[13vh]"
   >
-    <section class="page-surface flex min-h-screen items-start justify-center px-5 py-12 md:py-16">
+    <section class="page-surface flex min-h-[calc(87vh-44px)] items-start justify-center px-5 py-10 md:px-8 md:py-14">
       <article
-        class="content-panel relative mb-auto min-h-[calc(100vh-8rem)] w-full max-w-[900px] rounded-[8px] px-6 pb-8 pt-24 text-zinc-900 md:px-12"
+        class="content-panel contact-panel relative w-full max-w-[820px] rounded-[8px] px-6 pb-8 pt-24 text-zinc-900 md:px-12 md:pb-10 md:pt-28"
         aria-labelledby="contact-title"
       >
         <h1
           id="contact-title"
-          class="absolute left-[-10px] top-4 w-[calc(100%+20px)] border-y border-red-300/45 bg-red-600/70 px-4 py-3 text-center text-sm font-black tracking-normal text-white shadow-[0_10px_28px_rgb(24_24_27/0.08)] md:text-base"
+          class="absolute left-[-10px] top-5 w-[calc(100%+20px)] border-y border-red-300/55 bg-red-600/85 px-4 py-3 text-center text-sm font-black leading-tight text-white shadow-[0_10px_26px_rgb(127_29_29/0.16)] md:top-6 md:text-base"
         >
           THANK YOU FOR VISITING MY PORTFOLIO SITE!
         </h1>
-        <div class="space-y-6 text-base leading-8 md:p-8 md:text-xl md:leading-9">
+
+        <div class="text-base leading-8 text-zinc-700 md:text-lg md:leading-9">
           <p>
             ポートフォリオサイトの閲覧、ありがとうございました。<br>
             何かご連絡等があれば、以下のメールアドレスまでお願いします。
           </p>
+
           <!--email_off-->
-          <a class="inline-block break-all text-lg font-bold text-black underline md:text-2xl" href="mailto:kawa.portfolio.contact@gmail.com">
-            kawa.portfolio.contact@gmail.com
+          <a
+            class="group mt-6 flex min-w-0 items-center gap-3 border-t border-zinc-900/10 pt-5 text-zinc-950 outline-none transition hover:text-red-700 focus-visible:text-red-700 md:mt-7 md:gap-4 md:pt-6"
+            href="mailto:kawa.portfolio.contact@gmail.com"
+          >
+            <span class="grid h-11 w-11 shrink-0 place-items-center rounded-[6px] bg-zinc-950 text-white transition group-hover:bg-red-700 md:h-12 md:w-12">
+              <Mail aria-hidden="true" size={22} stroke-width={1.9} />
+            </span>
+            <span class="min-w-0 flex-1 break-all text-base font-bold leading-6 md:text-xl">
+              kawa.portfolio.contact@gmail.com
+            </span>
+            <ArrowUpRight aria-hidden="true" size={21} stroke-width={2} class="shrink-0 text-zinc-400 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-red-700" />
           </a>
           <!--/email_off-->
         </div>

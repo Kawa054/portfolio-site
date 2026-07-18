@@ -1,8 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
+import { ArrowUpRight, FileText, House } from '@lucide/astro'
 
 const entries = [
   {
+    id: 'portfolio-renewal',
     date: '2026/06/07',
     title: 'Portfolio renewal log',
     category: '制作メモ',
@@ -15,29 +17,107 @@ const entries = [
   <main
     id="content"
     class="tessellation-page relative min-h-screen scroll-mt-[13vh]"
+    data-tab-root
+    data-tab-param="entry"
   >
-    <section class="page-surface flex min-h-screen items-start justify-center px-5 py-14 md:px-8 md:py-16">
-      <article class="content-panel min-h-[calc(100vh-8rem)] w-full max-w-[980px] rounded-[10px] p-6 text-zinc-900 md:p-10">
-        <header class="content-heading mb-8 pb-5">
-          <h1 class="text-3xl font-bold md:text-4xl">Diary</h1>
-          <p class="mt-3 text-base leading-7 text-zinc-600">
-            日々の制作、研究、考えたことを短く残していく場所です。
-          </p>
-        </header>
+    <section class="page-surface min-h-screen px-5 py-14 md:px-8 md:pt-16">
+      <div class="mx-auto flex w-full max-w-[1320px] flex-col justify-center gap-8 md:flex-row">
+        <nav
+          class="side-nav section-side-nav section-nav-panel diary-side-nav shrink-0 rounded-[10px] md:min-h-[calc(100vh-5rem)] md:w-[280px]"
+          aria-label="Diary article navigation"
+        >
+          <button
+            type="button"
+            class="side-nav-item group is-active w-full text-left text-zinc-700 transition"
+            data-tab-button="home"
+          >
+            <House aria-hidden="true" size={20} stroke-width={1.9} class="diary-nav-icon" />
+            <span class="relative z-[1] min-w-0 py-1">
+              <span class="side-nav-label block text-sm font-bold leading-5 text-zinc-900">Diary Home</span>
+              <span class="mt-1 block text-xs font-semibold text-zinc-500">概要・最近の記事</span>
+            </span>
+          </button>
 
-        <div class="space-y-5">
           {entries.map((entry) => (
-            <article class="feature-card rounded-md p-5 transition hover:-translate-y-0.5 hover:bg-white/86 md:p-6">
-              <div class="mb-4 flex flex-wrap items-center gap-3 text-sm text-zinc-600">
-                <time class="font-semibold">{entry.date}</time>
-                <span class="rounded bg-zinc-900 px-3 py-1 text-xs font-bold text-white">{entry.category}</span>
-              </div>
-              <h2 class="text-2xl font-bold">{entry.title}</h2>
-              <p class="mt-4 text-base leading-8 md:text-lg">{entry.body}</p>
-            </article>
+            <button
+              type="button"
+              class="side-nav-item group w-full text-left text-zinc-700 transition"
+              data-tab-button={entry.id}
+            >
+              <FileText aria-hidden="true" size={20} stroke-width={1.9} class="diary-nav-icon" />
+              <span class="relative z-[1] min-w-0 py-1">
+                <time class="block text-xs font-semibold tabular-nums text-zinc-500">{entry.date}</time>
+                <span class="side-nav-label mt-1 block text-sm font-bold leading-5 text-zinc-800">{entry.title}</span>
+                <span class="mt-1 block text-xs font-semibold text-red-700">{entry.category}</span>
+              </span>
+            </button>
           ))}
-        </div>
-      </article>
+        </nav>
+
+        <article class="content-panel min-h-[calc(100vh-5rem)] w-full max-w-[1040px] rounded-[10px] p-6 text-zinc-900 md:p-10">
+          <section data-tab-panel="home" aria-labelledby="diary-home-title">
+            <header class="content-heading mb-8 pb-5">
+              <p class="mb-2 text-sm font-bold uppercase text-red-700">Diary</p>
+              <h1 id="diary-home-title" class="text-3xl font-bold leading-tight md:text-4xl">Diary Home</h1>
+            </header>
+
+            <section class="feature-card rounded-md p-5 md:p-6">
+              <h2 class="text-xl font-bold md:text-2xl">このページについて</h2>
+              <p class="mt-4 text-base leading-8 text-zinc-700 md:text-lg">
+                日々の中で思いついたことや、考えを整理するために書いた短い記事をまとめるページです。
+              </p>
+            </section>
+
+            <section class="mt-8">
+              <div class="mb-4 flex items-baseline justify-between gap-4">
+                <h2 class="text-xl font-bold md:text-2xl">最近の記事</h2>
+                <span class="text-sm font-semibold text-zinc-500">Latest entries</span>
+              </div>
+              <ul class="space-y-3">
+                {entries.slice(0, 4).map((entry) => (
+                  <li>
+                    <a
+                      href={`/diary?entry=${entry.id}#content`}
+                      class="group flex min-w-0 items-center gap-4 rounded-[6px] border border-zinc-900/10 bg-white/75 p-4 shadow-[0_8px_20px_rgb(24_24_27/0.04)] transition hover:-translate-y-0.5 hover:border-zinc-900/25 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+                    >
+                      <FileText aria-hidden="true" size={22} stroke-width={1.8} class="shrink-0 text-red-700" />
+                      <span class="min-w-0 flex-1">
+                        <span class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-semibold text-zinc-500">
+                          <time class="tabular-nums">{entry.date}</time>
+                          <span class="text-red-700">{entry.category}</span>
+                        </span>
+                        <span class="mt-1 block text-base font-bold leading-6 text-zinc-900 md:text-lg">{entry.title}</span>
+                      </span>
+                      <ArrowUpRight aria-hidden="true" size={20} stroke-width={2} class="shrink-0 text-zinc-400 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-zinc-900" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </section>
+
+          {entries.map((entry, index) => (
+            <section
+              class="hidden"
+              data-tab-panel={entry.id}
+              aria-labelledby={`diary-${index}`}
+            >
+              <header class="content-heading mb-8 pb-5">
+                <p class="mb-2 text-sm font-bold uppercase text-red-700">Diary</p>
+                <h1 id={`diary-${index}`} class="text-3xl font-bold leading-tight md:text-4xl">{entry.title}</h1>
+                <div class="mt-4 flex flex-wrap items-center gap-3 text-sm text-zinc-600">
+                  <time class="font-semibold tabular-nums">{entry.date}</time>
+                  <span class="rounded bg-zinc-900 px-3 py-1 text-xs font-bold text-white">{entry.category}</span>
+                </div>
+              </header>
+
+              <div class="feature-card rounded-md p-5 md:p-6">
+                <p class="text-base leading-8 md:text-lg">{entry.body}</p>
+              </div>
+            </section>
+          ))}
+        </article>
+      </div>
     </section>
   </main>
 </BaseLayout>
