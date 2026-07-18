@@ -37,7 +37,7 @@ export const careerEntries: CareerEntry[] = [
     iconClass: 'bg-[#b91c1c] text-white',
     works: [
       { title: 'ポートフォリオサイト', image: '/works/portfolio.png', href: '/works?work=0#content' },
-      { title: '折り紙力学系の研究', image: '/origami/tess.png', href: '/reserch?topic=1#content' }
+      { title: '折り紙力学系の研究', image: '/origami/tess.png', href: '/research?topic=1#content' }
     ]
   },
   {
@@ -161,4 +161,3 @@ export const hobbies: Hobby[] = [
     text: '音楽鑑賞と同様に、価値観に触れることが出来る映画や動画も好きで、他にもYouTube等での解説動画や配信なども好きです。最近では特にe-sportsの試合観戦にハマっており、積み上げた努力と勝ちたいという思いのぶつかり合いやそれから生まれる高度な戦術などを見て感動を友人と共有しています。また、選手のプレーの意図やチームの戦略を考えることも面白く、「成功」の再現確率を各々がどう上げているかなどを分析しています。この趣味を通じて、プロの仕事に対する姿勢から学ぶことが多くありました。'
   }
 ]
-

@@ -1,0 +1,2 @@
+/reserch /research 301
+/reserch/* /research/:splat 301

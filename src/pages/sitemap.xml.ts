@@ -2,7 +2,7 @@ const pages = [
   '/',
   '/about',
   '/works',
-  '/reserch',
+  '/research',
   '/diary',
   '/contact'
 ]
