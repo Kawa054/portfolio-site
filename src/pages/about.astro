@@ -1,6 +1,64 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro'
 import { hobbies, skillRows } from '../data/portfolio'
+import { ArrowUpRight, CodeXml, GraduationCap, Landmark, School } from '@lucide/astro'
+
+const career = [
+  {
+    period: '2016 - 2021',
+    organization: '熊本高等専門学校',
+    detail: '人間情報システム工学科',
+    duration: '5年間',
+    note: '',
+    achievement: '卒業時席次1位',
+    icon: School,
+    iconClass: 'bg-[#0f766e] text-white',
+    works: [
+      { title: 'Rolling Snow', image: '/works/rs.png', href: '/works?work=5#content' },
+      { title: 'Androidアプリ開発インターン', image: '/works/intern.png', href: '/works?work=4#content' },
+      { title: 'CCCeB', image: '/works/procon.png', href: '/works?work=3#content' }
+    ]
+  },
+  {
+    period: '2021 - 2024',
+    organization: '京都大学',
+    detail: '工学部 情報学科 数理工学コース',
+    duration: '3年間',
+    note: '2年次編入',
+    achievement: '',
+    icon: Landmark,
+    iconClass: 'bg-zinc-900 text-white',
+    works: [
+      { title: 'NHKロボットコンテスト', image: '/works/robocon.png', href: '/works?work=2#content' },
+      { title: 'MinDiger', image: '/works/mindiger.png', href: '/works?work=1#content' }
+    ]
+  },
+  {
+    period: '2024 - 2026',
+    organization: '京都大学大学院',
+    detail: '情報学研究科 数理工学コース',
+    duration: '2年間',
+    note: '',
+    achievement: '',
+    icon: GraduationCap,
+    iconClass: 'bg-[#b91c1c] text-white',
+    works: [
+      { title: 'ポートフォリオサイト', image: '/works/portfolio.png', href: '/works?work=0#content' },
+      { title: '折り紙力学系の研究', image: '/origami/tess.png', href: '/reserch?topic=1#content' }
+    ]
+  },
+  {
+    period: '2026 - 現在',
+    organization: '通信系大手企業',
+    detail: 'Software Engineer',
+    duration: '',
+    note: '',
+    achievement: '',
+    icon: CodeXml,
+    iconClass: 'bg-[#0369a1] text-white',
+    works: []
+  }
+]
 
 const qualifications = [
   '普通自動車第一種運転免許',
@@ -16,36 +74,37 @@ const achievements = [
 
 const papers = [
   {
-    date: '2026/03/02',
-    venue: 'arXiv:2603.02410',
-    title: 'Invariant Curves and the Variational Structure in Tubular Origami Dynamical Systems',
-    url: 'https://arxiv.org/abs/2603.02410'
-  }
-]
-
-const plans = [
-  {
-    date: '2026/09',
-    event: '日本応用数理学会 参加予定',
-    title: '管状折り紙力学系の変分構造と大域的カオス'
+    date: '2026/06/24',
+    venue: 'Chaos 36, 063139 (2026)',
+    title: 'Invariant curves and the variational structure in tubular origami dynamical systems',
+    url: 'https://doi.org/10.1063/5.0332738'
   }
 ]
 
 const presentations = [
   {
+    date: '2026/09',
+    event: '日本応用数理学会',
+    title: '管状折り紙力学系の変分構造と大域的カオス',
+    planned: true
+  },
+  {
     date: '2025/09/04',
     event: '日本応用数理学会 2025年度 年会',
-    title: '折り紙写像における不変曲線とアトラクターの存在について'
+    title: '折り紙写像における不変曲線とアトラクターの存在について',
+    planned: false
   },
   {
     date: '2025/01/12',
     event: 'WINTER ANNUAL CONFERENCE ON DYNAMICAL SYSTEMS 2024',
-    title: 'The existence of invariant curves in Origami maps'
+    title: 'The existence of invariant curves in Origami maps',
+    planned: false
   },
   {
     date: '2024/09/16',
     event: '日本応用数理学会 2024年度 年会',
-    title: '折り紙写像における不変曲線の存在について'
+    title: '折り紙写像における不変曲線の存在について',
+    planned: false
   }
 ]
 ---
@@ -79,9 +138,75 @@ const presentations = [
           <header class="content-heading mb-8 pb-5">
             <h1 id="profile-title" class="text-2xl font-bold tracking-normal md:text-4xl">市川 龍太郎 / Ryutaro Ichikawa</h1>
           </header>
-          <div class="feature-card rounded-md p-6 text-base font-semibold leading-8 text-zinc-700 md:p-8 md:text-lg">
-            準備中です。
-          </div>
+          <ol>
+            {career.map((item, index) => {
+              const Icon = item.icon
+
+              return (
+                <li class="grid grid-cols-[48px_minmax(0,1fr)] gap-x-4 md:grid-cols-[132px_56px_minmax(0,1fr)] md:gap-x-6">
+                  <time class="col-start-2 row-start-1 mb-2 text-sm font-black tabular-nums text-zinc-600 md:col-start-1 md:mb-0 md:pt-4 md:text-base">
+                    {item.period}
+                  </time>
+
+                  <div class="relative col-start-1 row-span-2 row-start-1 flex justify-center self-stretch md:col-start-2 md:row-span-1">
+                    {index !== career.length - 1 && (
+                      <span class="absolute bottom-[-24px] top-6 w-px bg-zinc-900/20 md:bottom-[-28px] md:top-7"></span>
+                    )}
+                    <span class:list={[
+                      'relative z-[1] grid h-12 w-12 place-items-center rounded-[8px] shadow-[0_10px_24px_rgb(24_24_27/0.14)] md:h-14 md:w-14',
+                      item.iconClass
+                    ]}>
+                      <Icon aria-hidden="true" size={26} stroke-width={1.8} />
+                    </span>
+                  </div>
+
+                  <div class:list={[
+                    'col-start-2 row-start-2 min-w-0 md:col-start-3 md:row-start-1',
+                    index !== career.length - 1 ? 'pb-8' : ''
+                  ]}>
+                    <div class="min-w-0">
+                      <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                        <h2 class="text-xl font-bold leading-tight text-zinc-950 md:text-2xl">{item.organization}</h2>
+                        {item.duration && (
+                          <span class="text-base font-black text-zinc-900/20 md:text-lg">{item.duration}</span>
+                        )}
+                        {item.achievement && (
+                          <span class="text-sm font-bold text-zinc-900/20 md:text-base">{item.achievement}</span>
+                        )}
+                      </div>
+                      <p class="mt-2 text-base font-semibold text-zinc-600 md:text-lg">
+                        {item.detail}
+                        {item.note && <span class="ml-2 text-sm font-medium text-zinc-500">({item.note})</span>}
+                      </p>
+                    </div>
+
+                    {item.works.length > 0 && (
+                      <div class="mt-5">
+                        <ul class="grid gap-3 xl:grid-cols-2">
+                          {item.works.map((work) => (
+                            <li>
+                              <a
+                                href={work.href}
+                                class="group flex min-h-[82px] overflow-hidden rounded-[6px] border border-zinc-900/10 bg-white/65 shadow-[0_8px_20px_rgb(24_24_27/0.045)] transition hover:-translate-y-0.5 hover:border-zinc-900/25 hover:bg-white hover:shadow-[0_12px_26px_rgb(24_24_27/0.08)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0369a1]"
+                              >
+                                <span class="block h-20 w-24 shrink-0 overflow-hidden border-r border-zinc-900/10 bg-zinc-50 p-2 md:h-24 md:w-32">
+                                  <img src={work.image} alt="" class="h-full w-full object-contain transition duration-200 group-hover:scale-[1.03]">
+                                </span>
+                                <span class="flex min-w-0 flex-1 items-center gap-3 px-3 py-3 md:px-4">
+                                  <span class="min-w-0 flex-1 text-sm font-bold leading-5 text-zinc-800 md:text-base">{work.title}</span>
+                                  <ArrowUpRight aria-hidden="true" size={18} stroke-width={2} class="shrink-0 text-zinc-400 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-zinc-800" />
+                                </span>
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </li>
+              )
+            })}
+          </ol>
         </section>
 
         <section class="hidden" data-tab-panel="1" aria-labelledby="skills-title">
@@ -90,7 +215,7 @@ const presentations = [
           </header>
           <div class="space-y-3 md:pl-5">
             {skillRows.map((row) => (
-              <section class="flex items-start gap-4 md:gap-6">
+              <section class="flex min-w-0 items-start gap-4 md:gap-6">
                 <button
                   type="button"
                   class="group grid h-[70px] w-[70px] shrink-0 place-items-center rounded transition hover:scale-110 hover:bg-white/55 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ee7800] md:h-[86px] md:w-[86px]"
@@ -103,13 +228,16 @@ const presentations = [
                 >
                   <img src={row.star} alt="" class="h-[62px] w-[62px] object-contain md:h-[78px] md:w-[78px]">
                 </button>
-                <div class="min-h-[82px] border-l-[3px] border-[#1e4f012f] pl-4 md:min-h-[104px] md:pl-6">
-                  <ul class="flex flex-wrap gap-x-3 gap-y-2 md:gap-x-4 md:gap-y-3">
+                <div class="min-w-0 flex-1 border-l-[3px] border-[#1e4f012f] pl-4 md:min-h-[104px] md:pl-6">
+                  <ul
+                    class="mr-auto flex w-full flex-nowrap justify-start gap-3 overflow-x-auto pb-2 md:grid md:gap-2 md:overflow-visible md:pb-0"
+                    style={`grid-template-columns: repeat(${row.skills.length}, minmax(0, 1fr)); max-width: ${row.skills.length * 94 - 8}px;`}
+                  >
                     {row.skills.map((skill) => (
-                      <li>
+                      <li class="shrink-0 md:min-w-0">
                         <button
                           type="button"
-                          class="group grid h-[64px] w-[64px] place-items-center rounded p-1 transition hover:scale-110 hover:bg-white/65 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ee7800] md:h-[86px] md:w-[86px]"
+                          class="group grid h-[64px] w-[64px] place-items-center rounded p-1 transition hover:scale-105 hover:bg-white/65 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ee7800] md:aspect-square md:h-auto md:w-full md:max-w-[86px]"
                           aria-label={skill.name}
                           title={skill.name}
                           data-info-card
@@ -117,7 +245,7 @@ const presentations = [
                           data-info-description={skill.description}
                           data-info-image={skill.icon}
                         >
-                          <img src={skill.icon} alt="" class="h-[54px] w-[54px] object-contain md:h-[76px] md:w-[76px]">
+                          <img src={skill.icon} alt="" class="h-[84%] w-[84%] object-contain">
                         </button>
                       </li>
                     ))}
@@ -131,15 +259,12 @@ const presentations = [
         <section class="hidden" data-tab-panel="2" aria-labelledby="credentials-title">
           <header class="content-heading mb-8 pb-5">
             <h1 id="credentials-title" class="text-3xl font-bold">資格・実績</h1>
-            <p class="mt-3 text-sm leading-7 text-zinc-600">資格、受賞、論文、学会発表を時系列とカテゴリで整理しています。</p>
           </header>
 
-          <div class="grid gap-5 lg:grid-cols-[0.82fr_1.18fr]">
-            <div class="space-y-5">
-              <section class="feature-card rounded-md p-5">
-                <div class="mb-5 flex items-end justify-between gap-4">
+          <div class="space-y-3">
+              <section class="feature-card rounded-md p-4">
+                <div class="mb-3">
                   <h2 class="text-xl font-bold">資格</h2>
-                  <span class="text-3xl font-bold text-zinc-900/18">{qualifications.length}</span>
                 </div>
                 <ul class="flex flex-wrap gap-2">
                   {qualifications.map((item) => (
@@ -150,10 +275,9 @@ const presentations = [
                 </ul>
               </section>
 
-              <section class="feature-card rounded-md p-5">
-                <div class="mb-5 flex items-end justify-between gap-4">
+              <section class="feature-card rounded-md p-4">
+                <div class="mb-3">
                   <h2 class="text-xl font-bold">実績・受賞</h2>
-                  <span class="text-3xl font-bold text-zinc-900/18">{achievements.length}</span>
                 </div>
                 <ul class="space-y-3">
                   {achievements.map((item) => (
@@ -164,10 +288,9 @@ const presentations = [
                 </ul>
               </section>
 
-              <section class="feature-card rounded-md p-5">
-                <div class="mb-5 flex items-end justify-between gap-4">
+              <section class="feature-card rounded-md p-4">
+                <div class="mb-3">
                   <h2 class="text-xl font-bold">論文</h2>
-                  <span class="text-3xl font-bold text-zinc-900/18">{papers.length}</span>
                 </div>
                 <ul class="space-y-3">
                   {papers.map((paper) => (
@@ -184,41 +307,26 @@ const presentations = [
                 </ul>
               </section>
 
-              <section class="feature-card rounded-md p-5">
-                <div class="mb-5 flex items-end justify-between gap-4">
-                  <h2 class="text-xl font-bold">予定</h2>
-                  <span class="text-3xl font-bold text-zinc-900/18">{plans.length}</span>
-                </div>
-                <ul class="space-y-3">
-                  {plans.map((plan) => (
-                    <li class="rounded bg-white/70 p-4 shadow-[0_6px_14px_rgb(24_24_27/0.035)] transition hover:-translate-y-0.5 hover:bg-white">
-                      <div class="mb-3 flex flex-wrap items-center gap-2">
-                        <time class="rounded bg-[#ee7800] px-3 py-1 text-xs font-bold text-white">{plan.date}</time>
-                        <span class="text-xs font-bold text-zinc-500">{plan.event}</span>
-                      </div>
-                      <h3 class="text-base font-bold leading-7 text-zinc-950">{plan.title}</h3>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            </div>
-
-            <section class="feature-card rounded-md p-5">
-              <div class="mb-6 flex items-end justify-between gap-4">
-                <div>
-                  <h2 class="text-xl font-bold">学会発表</h2>
-                  <p class="mt-2 text-sm text-zinc-600">新しい発表ほど上に表示しています。</p>
-                </div>
-                <span class="text-3xl font-bold text-zinc-900/18">{presentations.length}</span>
+            <section class="feature-card rounded-md p-4">
+              <div class="mb-4">
+                <h2 class="text-xl font-bold">学会発表</h2>
               </div>
-              <ol class="space-y-4">
+              <ol class="space-y-3">
                 {presentations.map((presentation) => (
                   <li class="group grid gap-4 rounded-md bg-white/72 p-4 shadow-[0_8px_20px_rgb(24_24_27/0.045)] transition hover:-translate-y-0.5 hover:bg-white md:grid-cols-[120px_1fr]">
-                    <time class="flex h-full min-h-20 items-center justify-center rounded bg-zinc-900 px-3 py-4 text-center text-sm font-bold text-white">
+                    <time class:list={[
+                      'flex h-full min-h-20 items-center justify-center rounded px-3 py-4 text-center text-sm font-bold text-white',
+                      presentation.planned ? 'bg-[#ee7800]' : 'bg-zinc-900'
+                    ]}>
                       {presentation.date}
                     </time>
                     <div>
-                      <p class="text-sm font-semibold uppercase tracking-normal text-zinc-500">{presentation.event}</p>
+                      <div class="flex flex-wrap items-center gap-2">
+                        <p class="text-sm font-semibold uppercase tracking-normal text-zinc-500">{presentation.event}</p>
+                        {presentation.planned && (
+                          <span class="rounded bg-[#ee7800]/12 px-2 py-1 text-xs font-bold text-[#a64f00]">予定</span>
+                        )}
+                      </div>
                       <h3 class="mt-2 text-lg font-bold leading-7 text-zinc-950">{presentation.title}</h3>
                     </div>
                   </li>
