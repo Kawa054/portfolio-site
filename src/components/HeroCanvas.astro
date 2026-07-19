@@ -85,7 +85,7 @@
 
     const camera = new PerspectiveCamera(45, 1, 0.1, 100)
     const renderer = new WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' })
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6))
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, window.innerWidth < 768 ? 1.15 : 1.35))
 
     const heroGroup = new Group()
     heroGroup.position.y = 0.85
@@ -164,6 +164,9 @@
     let lastY = 0
     let pointerMoved = false
     let frameId = 0
+    let heroInView = true
+    let pageVisible = !document.hidden
+    let heroObserver: IntersectionObserver | null = null
     const unbindHeroStates: Array<() => void> = []
     const lookAtTarget = new Vector3(2.05, 1.25, 0)
     const targetLookAt = lookAtTarget.clone()
@@ -353,27 +356,15 @@
     }
     window.addEventListener('portfolio:hero-state', handleExternalHeroState)
 
-    const cleanup = () => {
+    const stopAnimation = () => {
+      if (!frameId) return
       cancelAnimationFrame(frameId)
-      canvas.removeEventListener('pointerdown', onPointerDown)
-      canvas.removeEventListener('pointermove', onPointerMove)
-      canvas.removeEventListener('pointerup', onPointerUp)
-      canvas.removeEventListener('pointercancel', onPointerUp)
-      canvas.removeEventListener('wheel', onWheel)
-      canvas.removeEventListener('click', onClick)
-      canvas.removeEventListener('contextmenu', onContextMenu)
-      window.removeEventListener('resize', resize)
-      window.removeEventListener('portfolio:hero-state', handleExternalHeroState)
-      unbindHeroStates.forEach((unbind) => unbind())
-      clearText()
-      mainMesh.geometry.dispose()
-      origamiMaterial.dispose()
-      renderer.dispose()
-      document.removeEventListener('astro:before-swap', cleanup)
+      frameId = 0
     }
-    document.addEventListener('astro:before-swap', cleanup, { once: true })
 
     const tick = () => {
+      frameId = 0
+      if (!heroInView || !pageVisible) return
       const time = performance.now() * 0.001
       shaderUniforms.uTime.value = time
       targetScale += (1 - targetScale) * 0.08
@@ -393,6 +384,48 @@
       frameId = requestAnimationFrame(tick)
     }
 
-    tick()
+    const startAnimation = () => {
+      if (frameId || !heroInView || !pageVisible) return
+      frameId = requestAnimationFrame(tick)
+    }
+
+    const handleVisibilityChange = () => {
+      pageVisible = !document.hidden
+      if (pageVisible) startAnimation()
+      else stopAnimation()
+    }
+
+    if ('IntersectionObserver' in window) {
+      heroObserver = new IntersectionObserver(([entry]) => {
+        heroInView = entry?.isIntersecting ?? true
+        if (heroInView) startAnimation()
+        else stopAnimation()
+      }, { threshold: 0.01 })
+      heroObserver.observe(canvas.closest('section') ?? canvas)
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+
+    const cleanup = () => {
+      stopAnimation()
+      heroObserver?.disconnect()
+      canvas.removeEventListener('pointerdown', onPointerDown)
+      canvas.removeEventListener('pointermove', onPointerMove)
+      canvas.removeEventListener('pointerup', onPointerUp)
+      canvas.removeEventListener('pointercancel', onPointerUp)
+      canvas.removeEventListener('wheel', onWheel)
+      canvas.removeEventListener('click', onClick)
+      canvas.removeEventListener('contextmenu', onContextMenu)
+      window.removeEventListener('resize', resize)
+      window.removeEventListener('portfolio:hero-state', handleExternalHeroState)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      unbindHeroStates.forEach((unbind) => unbind())
+      clearText()
+      mainMesh.geometry.dispose()
+      origamiMaterial.dispose()
+      renderer.dispose()
+      document.removeEventListener('astro:before-swap', cleanup)
+    }
+    document.addEventListener('astro:before-swap', cleanup, { once: true })
+    startAnimation()
   }
 </script>
