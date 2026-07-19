@@ -2,6 +2,7 @@ import { bindImageLightbox } from './lightbox'
 import { bindInfoModal } from './info-modal'
 import { getLegacyContentTop, scrollToLegacyContentTop, typesetMath, updateActiveNav } from './page'
 import { bindPortfolioTabs } from './tabs'
+import { bindStandardMapExperiments } from '../standard-map-experiment'
 
 const replacePageContent = async (url: URL, keepScroll: boolean, pushHistory = true) => {
   const response = await fetch(url.pathname)
@@ -27,6 +28,7 @@ const replacePageContent = async (url: URL, keepScroll: boolean, pushHistory = t
   }
   updateActiveNav(url.pathname)
   bindPortfolioTabs()
+  bindStandardMapExperiments()
   typesetMath()
 
   if (keepScroll) {
@@ -39,6 +41,7 @@ const replacePageContent = async (url: URL, keepScroll: boolean, pushHistory = t
 
 const bindPortfolioNav = () => {
   bindPortfolioTabs()
+  bindStandardMapExperiments()
   bindImageLightbox()
   bindInfoModal()
   document.querySelectorAll<HTMLAnchorElement>('[data-scroll-content]').forEach((link) => {
@@ -77,4 +80,3 @@ export const initPortfolioNavigation = () => {
     replacePageContent(url, true, false).catch(() => window.location.reload())
   })
 }
-
