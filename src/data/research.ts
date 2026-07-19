@@ -108,8 +108,10 @@ export const researchTopics: ResearchTopic[] = [
         paragraphs: [
           String.raw`KAM定理とは、Kolmogorov、Arnol'd、Moserの3人の研究者から頭文字を取った定理で、可積分系において存在していた不変曲線(トーラス)が摂動を受けても多く生き残ることを主張する定理です。`,
           String.raw`例として、\[
-I_{m+1}=I_m+\varepsilon\sin\theta_m,\quad
-\theta_{m+1}=\theta_m+I_{m+1}
+\begin{aligned}
+I_{m+1} &\equiv I_m+\varepsilon\sin\theta_m \pmod{2\pi},\\
+\theta_{m+1} &\equiv \theta_m+I_{m+1} \pmod{2\pi}
+\end{aligned}
 \] で定義される標準写像(Standard Map)を考えます。ここで \((\theta_m,I_m)\in\mathbb{T}^2\)、\(\varepsilon>0\) を摂動パラメータとします。`,
           String.raw`横軸を \(\theta_m\)、縦軸を \(I_m\) とすると、\(\varepsilon=0\) では相空間を左右に横断する直線が現れます。\(\varepsilon\) を大きくするにつれて一部の直線は崩れていきますが、\(\varepsilon\) が十分小さいときには左右を横断する不変曲線が多く生き残ります。これがKAM定理の「不変曲線が摂動を受けても多く生き残る」という主張に対応します。`
         ],

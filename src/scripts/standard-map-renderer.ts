@@ -8,6 +8,77 @@ const moduloTau = (value: number) => {
   return result < 0 ? result + TAU : result
 }
 
+const radicalInverse = (index: number, base: number) => {
+  let value = 0
+  let fraction = 1 / base
+  let remaining = index
+  while (remaining > 0) {
+    value += (remaining % base) * fraction
+    remaining = Math.floor(remaining / base)
+    fraction /= base
+  }
+  return value
+}
+
+const getPeriodFourCenterAngle = (epsilon: number) => {
+  if (epsilon <= 2) return null
+
+  // The symmetric period-four center (a, 0) satisfies 2a + epsilon sin(a) = 2pi.
+  let lower = 0
+  let upper = Math.acos(-2 / epsilon)
+  for (let iteration = 0; iteration < 32; iteration += 1) {
+    const midpoint = (lower + upper) / 2
+    const residual = 2 * midpoint + epsilon * Math.sin(midpoint) - TAU
+    if (residual > 0) upper = midpoint
+    else lower = midpoint
+  }
+  return (lower + upper) / 2
+}
+
+const getInitialPoint = (orbit: number, quality: RenderQuality, epsilon: number) => {
+  const globalOrbitCount = quality === 'preview' ? 72 : 144
+  if (orbit < globalOrbitCount) {
+    const sequenceIndex = orbit + 1
+    return {
+      angle: TAU * radicalInverse(sequenceIndex, 2),
+      action: TAU * radicalInverse(sequenceIndex, 3)
+    }
+  }
+
+  const focusIndex = orbit - globalOrbitCount
+  const pointsPerRing = 6
+  const mainOrbitCount = quality === 'preview' ? 12 : 24
+  const isMainIsland = focusIndex < mainOrbitCount
+  const islandIndex = isMainIsland ? focusIndex : focusIndex - mainOrbitCount
+  const ring = Math.floor(islandIndex / pointsPerRing)
+  const ringCount = quality === 'preview' ? 2 : 4
+  const phase = (TAU * (islandIndex % pointsPerRing)) / pointsPerRing
+
+  if (!isMainIsland) {
+    const periodFourCenter = getPeriodFourCenterAngle(epsilon)
+    if (periodFourCenter !== null) {
+      const radius = 0.025 + (0.14 * (ring + 1)) / ringCount
+      return {
+        angle: moduloTau(periodFourCenter + radius * Math.cos(phase)),
+        action: moduloTau(radius * Math.sin(phase))
+      }
+    }
+
+    const sequenceIndex = globalOrbitCount + islandIndex + 1
+    return {
+      angle: TAU * radicalInverse(sequenceIndex, 2),
+      action: TAU * radicalInverse(sequenceIndex, 3)
+    }
+  }
+
+  const radius = 0.12 + (0.72 * (ring + 1)) / ringCount
+
+  return {
+    angle: moduloTau(Math.PI + radius * Math.cos(phase)),
+    action: moduloTau(radius * Math.sin(phase))
+  }
+}
+
 export const drawPhasePortrait = (
   canvas: HTMLCanvasElement | OffscreenCanvas,
   size: number,
@@ -43,14 +114,15 @@ export const drawPhasePortrait = (
   context.rect(left, top, plotWidth, plotHeight)
   context.clip()
 
-  const orbitCount = quality === 'preview' ? 48 : 96
+  const orbitCount = quality === 'preview' ? 96 : 192
   const burnIn = quality === 'preview' ? 60 : 100
-  const sampleCount = quality === 'preview' ? 300 : 600
+  const sampleCount = quality === 'preview' ? 150 : 300
   const pointSize = Math.max(1.15, size / 620)
 
   for (let orbit = 0; orbit < orbitCount; orbit += 1) {
-    let action = 0.06 + ((TAU - 0.12) * orbit) / (orbitCount - 1)
-    let angle = orbit % 2 === 0 ? 0.13 : Math.PI + 0.13
+    const initialPoint = getInitialPoint(orbit, quality, epsilon)
+    let action = initialPoint.action
+    let angle = initialPoint.angle
     context.fillStyle = COLORS[orbit % COLORS.length]
     context.globalAlpha = 0.9
 
@@ -95,7 +167,7 @@ export const drawPhasePortrait = (
     context.lineTo(left, y)
     context.stroke()
 
-    context.textAlign = 'center'
+    context.textAlign = tick.value === 0 ? 'left' : tick.value === TAU ? 'right' : 'center'
     context.fillText(tick.label, x, top + plotHeight + 20)
     context.textAlign = 'right'
     context.fillText(tick.label, left - 10, y)
