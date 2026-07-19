@@ -128,6 +128,7 @@ const bindExperiment = (root: HTMLElement) => {
   let drawFrame = 0
   let outputVersion = 0
   let outputUrl = ''
+  let lastRenderKey = ''
 
   const render = () => {
     window.cancelAnimationFrame(drawFrame)
@@ -144,7 +145,10 @@ const bindExperiment = (root: HTMLElement) => {
 
       const bounds = elements.stage.getBoundingClientRect()
       const size = Math.floor(Math.min(bounds.width, bounds.height))
+      const renderKey = `${size}:${epsilon}`
+      if (renderKey === lastRenderKey) return
       if (!drawPhasePortrait(elements.canvas, size, epsilon)) return
+      lastRenderKey = renderKey
 
       const currentVersion = ++outputVersion
       const updateOutput = (url: string) => {
@@ -177,13 +181,7 @@ const bindExperiment = (root: HTMLElement) => {
   })
 
   document.addEventListener('portfolio:tab-change', render)
-  const ResizeObserverClass = (window as unknown as { ResizeObserver?: typeof ResizeObserver }).ResizeObserver
-  if (ResizeObserverClass) {
-    const resizeObserver = new ResizeObserverClass(render)
-    resizeObserver.observe(elements.stage)
-  } else {
-    window.addEventListener('resize', render)
-  }
+  window.addEventListener('resize', render)
   render()
 }
 
