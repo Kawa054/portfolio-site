@@ -21,6 +21,7 @@ const replacePageContent = async (url: URL, keepScroll: boolean, pushHistory = t
     return
   }
 
+  document.dispatchEvent(new CustomEvent('portfolio:before-page-replace'))
   currentContent.replaceWith(nextContent)
   document.title = nextDocument.title
   if (pushHistory) {
@@ -42,6 +43,7 @@ const replacePageContent = async (url: URL, keepScroll: boolean, pushHistory = t
 const bindPortfolioNav = () => {
   bindPortfolioTabs()
   bindStandardMapExperiments()
+  typesetMath()
   bindImageLightbox()
   bindInfoModal()
   document.querySelectorAll<HTMLAnchorElement>('[data-scroll-content]').forEach((link) => {

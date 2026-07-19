@@ -61,6 +61,8 @@ import { researchTopics } from '../data/research'
                                     <img
                                       src={figure.src}
                                       alt={figure.alt}
+                                      loading="lazy"
+                                      decoding="async"
                                       data-lightbox-image
                                       class="w-full cursor-zoom-in rounded-md bg-white object-contain shadow-[0_6px_18px_rgb(24_24_27/0.08)] transition hover:brightness-95"
                                     >
@@ -104,6 +106,8 @@ import { researchTopics } from '../data/research'
                           <img
                             src={figure.src}
                             alt={figure.alt}
+                            loading="lazy"
+                            decoding="async"
                             data-lightbox-image
                             class="w-full cursor-zoom-in rounded-md bg-white object-contain shadow-[0_6px_18px_rgb(24_24_27/0.08)] transition hover:brightness-95"
                           >
@@ -130,6 +134,8 @@ import { researchTopics } from '../data/research'
                         <img
                           src={image}
                           alt=""
+                          loading="lazy"
+                          decoding="async"
                           data-lightbox-image
                           class:list={[
                             'w-full cursor-zoom-in rounded-md bg-white object-contain shadow-[0_6px_18px_rgb(24_24_27/0.05)] transition hover:brightness-95',
@@ -145,8 +151,9 @@ import { researchTopics } from '../data/research'
                       {section.videos.map((videoId) => (
                         <iframe
                           class="aspect-video w-full rounded-md bg-black"
-                          src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+                          data-video-src={`https://www.youtube-nocookie.com/embed/${videoId}`}
                           title="YouTube video player"
+                          loading="lazy"
                           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                           allowfullscreen
                         />

@@ -15,7 +15,14 @@ export const bindPortfolioTabs = () => {
         item.classList.toggle('is-active', active)
       })
       panels.forEach((panel) => {
-        panel.classList.toggle('hidden', panel.dataset.tabPanel !== selected)
+        const active = panel.dataset.tabPanel === selected
+        panel.classList.toggle('hidden', !active)
+        if (active) {
+          panel.querySelectorAll<HTMLIFrameElement>('iframe[data-video-src]:not([src])').forEach((frame) => {
+            const source = frame.dataset.videoSrc
+            if (source) frame.src = source
+          })
+        }
       })
 
       if (updateUrl && tabParam) {
@@ -39,13 +46,15 @@ export const bindPortfolioTabs = () => {
       })
     })
 
-    if (tabParam) {
-      const selected = new URLSearchParams(window.location.search).get(tabParam)
-      if (selected && Array.from(buttons).some((button) => button.dataset.tabButton === selected)) {
-        selectTab(selected)
-        if (window.location.hash === '#content') {
-          window.requestAnimationFrame(() => scrollToLegacyContentTop('auto'))
-        }
+    const requestedTab = tabParam ? new URLSearchParams(window.location.search).get(tabParam) : null
+    const selected = requestedTab && Array.from(buttons).some((button) => button.dataset.tabButton === requestedTab)
+      ? requestedTab
+      : Array.from(buttons).find((button) => button.classList.contains('is-active'))?.dataset.tabButton
+
+    if (selected) {
+      selectTab(selected)
+      if (window.location.hash === '#content') {
+        window.requestAnimationFrame(() => scrollToLegacyContentTop('auto'))
       }
     }
   })
